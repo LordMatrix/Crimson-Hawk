@@ -35,7 +35,7 @@ package
 			addEventListeners();
 		}
 		
-		private function init() {
+		private function init():void {
 			fired_shots = new Vector.<Shot>();
 			spare_shots = new Vector.<Shot>();
 			
@@ -132,6 +132,8 @@ package
 			var i:uint = 0;
 			
 			for each (var s:Shot in fired_shots) {
+				
+				//Move them
 				if (s.shape_.x < Misc.getStage().stageWidth) {
 					s.shape_.x += s.speedX_;
 				} else  {
@@ -142,6 +144,31 @@ package
 				i++;
 			}
 			
+		}
+		
+		
+		public function checkShotCollisions(item:*):Boolean {
+			
+			//Check collisions with enemies
+			var i:uint = 0;
+			var collided:Boolean = false;
+			
+			for each (var shot:Shot in fired_shots) {
+				if (shot.shape_.hitTestObject(item.mc_)) {
+					collided = true;
+					
+					spare_shots.push(shot);
+					fired_shots.splice(i, 1);
+					
+					//Place them away
+					shot.shape_.x = -10;
+					shot.shape_.y = -10;
+				}
+			
+				i++;
+			}
+			
+			return collided;
 		}
 		
 	}
