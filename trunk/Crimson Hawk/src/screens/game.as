@@ -24,7 +24,7 @@ package screens
 		private var lives:uint;
 		
 		
-		private var used_enemies:Vector.<Enemy>;
+		private var active_enemies:Vector.<Enemy>;
 		private var idle_enemies:Vector.<Enemy>;
 		
 		private var ship:Ship;
@@ -41,7 +41,7 @@ package screens
 		
 			backgr = new Background();
 			
-			used_enemies = new Vector.<Enemy>();
+			active_enemies = new Vector.<Enemy>();
 			idle_enemies = new Vector.<Enemy>();
 		}
 		
@@ -60,7 +60,7 @@ package screens
 				foeMC.y = Misc.random(10, Misc.getStage().stageHeight - 10);
 				
 				var foe:Enemy = new Enemy(1.0, foeMC, 0.005);
-				idle_enemies.push(foe);
+				active_enemies.push(foe);
 				addChild(foe.mc_);
 			}
 			
@@ -91,7 +91,7 @@ package screens
 			
 			var i:uint = 0;
 			
-			for each (var e:Enemy in idle_enemies) {
+			for each (var e:Enemy in active_enemies) {
 				if (e.mc_.x > 0) {
 					e.mc_.x -= 10;
 					//caculate the probability an enemy will shoot
@@ -102,6 +102,14 @@ package screens
 				}
 				
 				e.moveShots();
+				
+				if (ship.checkShotCollisions(e)) {
+					e.mc_.x = -10;
+					e.mc_.y = -10;
+					
+					idle_enemies.push(e);
+					active_enemies.splice(i, 1);
+				}
 				
 				i++;
 			}

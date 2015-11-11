@@ -7,8 +7,8 @@ package
 	 * ...
 	 * @author Marcos Vazquez
 	 */
-	public class Enemy 
-	{
+	public class Enemy {
+		
 		public var hp_:Number;
 		public var mc_:MovieClip;
 		public var fire_probability_:Number;
@@ -30,7 +30,7 @@ package
 			shot_shape.x = this.mc_.x - this.mc_.width/3;
 			shot_shape.y = this.mc_.y;
 						
-			var s:Shot = new Shot(shot_shape, 1, -15, 0);
+			var s:Shot = new Shot(shot_shape, 1, -15, 0, 1);
 			this.shots.push(s);
 			Misc.getStage().addChild(s.shape_);
 		}
