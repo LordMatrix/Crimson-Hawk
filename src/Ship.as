@@ -13,7 +13,6 @@ package
 	 */
 	public class Ship {
 		
-		private const MAX_SHOTS:uint = 4;
 		
 		private var rising:Boolean = false;
 		private var falling:Boolean = false;
@@ -23,8 +22,6 @@ package
 		public var hp_:Number;
 		public var mc_:MovieClip;
 		
-		private var fired_shots:Vector.<Shot>;
-		private var spare_shots:Vector.<Shot>;
 		
 		
 		public function Ship(hp:Number, mc:MovieClip) {
@@ -36,19 +33,8 @@ package
 		}
 		
 		private function init():void {
-			fired_shots = new Vector.<Shot>();
-			spare_shots = new Vector.<Shot>();
+				
 			
-			//create shots, stop them from going on after x/y < max, reposition them on shooting
-			for (var i:int; i < MAX_SHOTS; i++) {
-				
-				var shot_shape:Shape = Graphics.getEllipse(0, 0, 25, 8, 0x990000, 0.6);
-				TweenMax.to(shot_shape, 0, { blurFilter: { blurX:10 }} );
-				
-				var shot:Shot = new Shot(shot_shape, 1, 30, 0);
-				spare_shots.push(shot);
-				Misc.getStage().addChild(shot.shape_);
-			}
 		}
 		
 		private function addEventListeners():void {
@@ -87,7 +73,7 @@ package
 					retreating = true;
 					break;
 				case Keyboard.SPACE:
-					if (fired_shots.length < MAX_SHOTS) {
+					if (GameManager.getInstance().fired_shots_.length < GameManager.getInstance().MAX_SHOTS) {
 						Shoot();
 					}
 					break;
@@ -118,12 +104,12 @@ package
 		}
 		
 		public function Shoot():void {
-			var s:Shot = spare_shots.pop();
+			var s:Shot = GameManager.getInstance().spare_shots_.pop();
 						
 			s.shape_.x = this.mc_.x + this.mc_.width/3;
 			s.shape_.y = this.mc_.y;
 			
-			fired_shots.push(s);
+			GameManager.getInstance().fired_shots_.push(s);
 		}
 		
 		
@@ -131,14 +117,14 @@ package
 			
 			var i:uint = 0;
 			
-			for each (var s:Shot in fired_shots) {
+			for each (var s:Shot in GameManager.getInstance().fired_shots_) {
 				
 				//Move them
 				if (s.shape_.x < Misc.getStage().stageWidth) {
 					s.shape_.x += s.speedX_;
 				} else  {
-					spare_shots.push(s);
-					fired_shots.splice(i, 1);
+					GameManager.getInstance().spare_shots_.push(s);
+					GameManager.getInstance().fired_shots_.splice(i, 1);
 				}
 				
 				i++;
@@ -153,16 +139,18 @@ package
 			var i:uint = 0;
 			var collided:Boolean = false;
 			
-			for each (var shot:Shot in fired_shots) {
+			for each (var shot:Shot in GameManager.getInstance().fired_shots_) {
 				if (shot.shape_.hitTestObject(item.mc_)) {
 					collided = true;
 					
-					spare_shots.push(shot);
-					fired_shots.splice(i, 1);
+					GameManager.getInstance().spare_shots_.push(shot);
+					GameManager.getInstance().fired_shots_.splice(i, 1);
 					
 					//Place them away
 					shot.shape_.x = -10;
 					shot.shape_.y = -10;
+					
+					item.hp_ -= shot.damage_;
 				}
 			
 				i++;

@@ -20,8 +20,6 @@ package
 		private var welcomeScreen:welcome;
 		private var gameScreen:game;
 		
-		public var character:uint;
-		public var nick:String;
 		
 		public function Main():void 
 		{

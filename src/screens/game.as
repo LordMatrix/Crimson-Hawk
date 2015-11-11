@@ -5,6 +5,7 @@ package screens
 	import com.greensock.TweenMax;
 	import flash.display.MovieClip;
 	import flash.display.Shape;
+	import flash.display.Stage;
 	import flash.events.Event;
 	import flash.events.KeyboardEvent;
 	import flash.events.TimerEvent;
@@ -16,18 +17,8 @@ package screens
 	 */
 	public class game extends MovieClip {
 		
-		private const MAX_ENEMIES:uint = 8;
-		
-		private var backgr:Background;
-		
-		private var points:uint;
-		private var lives:uint;
-		
-		
-		private var active_enemies:Vector.<Enemy>;
-		private var idle_enemies:Vector.<Enemy>;
-		
-		private var ship:Ship;
+		private var backgr_:Background;
+		private var manager_:GameManager;
 		
 		public function game() {
 			super();
@@ -39,39 +30,12 @@ package screens
 		
 		private function initScreen():void {
 		
-			backgr = new Background();
-			
-			active_enemies = new Vector.<Enemy>();
-			idle_enemies = new Vector.<Enemy>();
+			backgr_ = new Background();
+			manager_ = GameManager.getInstance();
 		}
 		
 		private function addObjects():void { 
-			addChild(backgr);
-			
-			
-			//shot = Graphics.getCircle(0, 0, 10, 0x990000, 0.8);
-			
-			
-			
-			for (var i:uint=0; i < MAX_ENEMIES; i++) {
-				
-				var foeMC:MovieClip = new saucer1();
-				foeMC.x = Misc.getStage().stageWidth + (100 * (i + 1));
-				foeMC.y = Misc.random(10, Misc.getStage().stageHeight - 10);
-				
-				var foe:Enemy = new Enemy(1.0, foeMC, 0.005);
-				active_enemies.push(foe);
-				addChild(foe.mc_);
-			}
-			
-			var shipMC:MovieClip = new ship1();
-			
-			shipMC.x = 100;
-			shipMC.y = Misc.getStage().stageHeight / 2;
-			
-			ship = new Ship(10, shipMC);
-			
-			addChild(ship.mc_);
+			addChild(backgr_);
 		}
 		
 		
@@ -82,16 +46,15 @@ package screens
 		
 		private function loop(e:Event):void {
 			moveEnemies();
+			manager_.moveShots();
 		}
-
-		
 
 		
 		private function moveEnemies():void {
 			
 			var i:uint = 0;
 			
-			for each (var e:Enemy in active_enemies) {
+			for each (var e:Enemy in manager_.active_enemies_) {
 				if (e.mc_.x > 0) {
 					e.mc_.x -= 10;
 					//caculate the probability an enemy will shoot
@@ -101,14 +64,18 @@ package screens
 					e.mc_.x = Misc.getStage().stageWidth;
 				}
 				
-				e.moveShots();
-				
-				if (ship.checkShotCollisions(e)) {
-					e.mc_.x = -10;
-					e.mc_.y = -10;
+				if (manager_.ship_.checkShotCollisions(e)) {
 					
-					idle_enemies.push(e);
-					active_enemies.splice(i, 1);
+					//If the enemy is dead, remove him from scene
+					if (e.hp_ <= 0) {
+						e.mc_.x = -10;
+						e.mc_.y = -10;
+
+						manager_.idle_enemies_.push(e);
+						manager_.active_enemies_.splice(i, 1);
+						
+						
+					}
 				}
 				
 				i++;
@@ -122,7 +89,7 @@ package screens
 		}
 		
 		private function killScreen():void {
-			backgr.kill();
+			backgr_.kill();
 			removeEventListeners();
 			removeObjects();
 		}
@@ -133,8 +100,8 @@ package screens
 		
 		private function removeObjects():void {
 			
-			removeChild(backgr);
-			backgr = null;
+			removeChild(backgr_);
+			backgr_ = null;
 		}
 		
 	}
