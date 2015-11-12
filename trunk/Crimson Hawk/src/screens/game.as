@@ -47,6 +47,7 @@ package screens
 		private function loop(e:Event):void {
 			manager_.moveEnemies();
 			manager_.moveShots();
+			manager_.checkCollisions();
 		}
 
 		
