@@ -3,12 +3,27 @@ package
 	import com.greensock.TweenMax;
 	import flash.display.MovieClip;
 	import flash.display.Shape;
+	import flash.events.Event;
+	import flash.events.TimerEvent;
 	import flash.geom.ColorTransform;
+	import flash.net.URLLoader;
+	import flash.net.URLRequest;
+	import flash.utils.Timer;
 	/**
 	 * ...
 	 * @author Marcos Vázquez
 	 */
 	public class GameManager extends MovieClip {
+		
+		
+		
+		public var level:XML;
+		private var myLoader:URLLoader = new URLLoader();
+		private var timers:Vector.<Timer>;
+		
+		
+		
+		
 		
 		/** Constants **/
 		private const MAX_ENEMIES:uint = 8;
@@ -46,8 +61,69 @@ package
 		public function GameManager() {
 			super();
 			trace("GameManager");
+			
+			timers = new Vector.<Timer>();
+			parseLevel();
+			
 			init();
 		}
+		
+		
+		
+		private function parseLevel():void {
+			myLoader.load(new URLRequest("../Docs/lvl1.xml"));
+			myLoader.addEventListener(Event.COMPLETE, processXML);
+		}
+		
+		private function processXML(e:Event):void {
+			level = new XML(e.target.data);
+			//trace(level);
+			
+			var i:uint = 0;
+			
+			for each (var wave:XML in level.time) {
+				
+				trace(wave.@id);
+				timers[i] = new Timer(wave.@id * 1000);
+				
+				timers[i].addEventListener(TimerEvent.TIMER, processWave(wave, i));
+				timers[i].start();
+			
+				i++;
+			}
+			
+		}
+		
+		
+		private function processWave(wave:XML, i:uint):Function {
+			return function(e:TimerEvent):void {
+				trace(wave);
+				
+				for each (var pack:XML in wave.enemies) {
+					createEnemies(pack.type, pack.amount);
+				}
+				
+				timers[i].stop();
+			}
+		}
+		
+		
+		private function createEnemies(type, amount) {
+			
+			for (var i:uint=0; i < amount; i++) {
+				
+				var foeMC:MovieClip = new saucer1();
+				foeMC.x = Misc.getStage().stageWidth + (100 * (i + 1));
+				foeMC.y = Misc.random(10, Misc.getStage().stageHeight - 10);
+				
+				var foe:Enemy = new Enemy(3.0, foeMC, 0.005);
+				active_enemies_.push(foe);
+				Misc.getStage().addChild(foe.mc_);
+			}
+		}
+		
+		
+		
 		
 		private function init():void {
 				
@@ -57,18 +133,8 @@ package
 			fired_shots_ = new Vector.<Shot>();
 			spare_shots_ = new Vector.<Shot>();
 			
-			for (var i:uint=0; i < MAX_ENEMIES; i++) {
-				
-				var foeMC:MovieClip = new saucer1();
-				foeMC.x = Misc.getStage().stageWidth + (100 * (i + 1));
-				foeMC.y = Misc.random(10, Misc.getStage().stageHeight - 10);
-				
-				var foe:Enemy = new Enemy(5.0, foeMC, 0.005);
-				active_enemies_.push(foe);
-				Misc.getStage().addChild(foe.mc_);
-			}
 			
-			for (i=0; i < MAX_SHOTS; i++) {
+			for (var i:uint=0; i < MAX_SHOTS; i++) {
 				
 				var shot_shape:Shape = Graphics.getEllipse(0, 0, 25, 8, 0x990000, 0.6);
 				TweenMax.to(shot_shape, 0, { blurFilter: { blurX:10 }} );
@@ -109,20 +175,17 @@ package
 		
 		public function moveEnemies():void {
 			
+			for each (var e:Enemy in active_enemies_) {
+				e.move();
+			}
+		}
+		
+	
+		public function checkCollisions():void {
+			
 			var i:uint = 0;
 			
 			for each (var e:Enemy in active_enemies_) {
-				if (e.mc_.x > 0) {
-					e.mc_.x -= 10;
-					e.life_bar_.x -= 10;
-					
-					//caculate the probability an enemy will shoot
-					if (Math.random() < e.fire_probability_)
-						e.Shoot();
-				} else {
-					e.mc_.x = Misc.getStage().stageWidth;
-					e.life_bar_.x = Misc.getStage().stageWidth - 20;
-				}
 				
 				if (ship_.checkShotCollisions(e)) {
 					e.life_bar_.width = (LIFEBAR_WIDTH * e.hp_ ) / e.init_hp_;

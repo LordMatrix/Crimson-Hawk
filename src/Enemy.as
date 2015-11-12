@@ -43,6 +43,20 @@ package
 			GameManager.getInstance().enemy_shots_.push(s);
 			Misc.getStage().addChild(s.shape_);
 		}
+		
+		public function move():void {
+			if (mc_.x > 0) {
+				mc_.x -= 10;
+				life_bar_.x -= 10;
+				
+				//caculate the probability an enemy will shoot
+				if (Math.random() < fire_probability_)
+					Shoot();
+			} else {
+				mc_.x = Misc.getStage().stageWidth;
+				life_bar_.x = Misc.getStage().stageWidth - 20;
+			}
+		}
 	}
 
 }
