@@ -3,6 +3,7 @@ package
 	import com.greensock.TweenMax;
 	import flash.display.MovieClip;
 	import flash.display.Shape;
+	import flash.geom.ColorTransform;
 	/**
 	 * ...
 	 * @author Marcos Vázquez
@@ -12,6 +13,7 @@ package
 		/** Constants **/
 		private const MAX_ENEMIES:uint = 8;
 		public const MAX_SHOTS:uint = 4;
+		public const LIFEBAR_WIDTH:uint = 40;
 		
 		
 		// Vars **/
@@ -97,7 +99,56 @@ package
 					//s.shape_.y += s.speedY_;
 				} else  {
 					Misc.getStage().removeChild(s.shape_);
-					GameManager.getInstance().enemy_shots_.splice(i, 1);
+					enemy_shots_.splice(i, 1);
+				}
+				
+				i++;
+			}
+		}
+		
+		
+		public function moveEnemies():void {
+			
+			var i:uint = 0;
+			
+			for each (var e:Enemy in active_enemies_) {
+				if (e.mc_.x > 0) {
+					e.mc_.x -= 10;
+					e.life_bar_.x -= 10;
+					
+					//caculate the probability an enemy will shoot
+					if (Math.random() < e.fire_probability_)
+						e.Shoot();
+				} else {
+					e.mc_.x = Misc.getStage().stageWidth;
+					e.life_bar_.x = Misc.getStage().stageWidth - 20;
+				}
+				
+				if (ship_.checkShotCollisions(e)) {
+					e.life_bar_.width = (LIFEBAR_WIDTH * e.hp_ ) / e.init_hp_;
+					
+					var resultColor:uint; 
+					var g:uint = Math.round((0xFF / e.init_hp_) * e.hp_);
+					var r:uint = 0xFF - g;
+					var b:uint = 0xFF;
+
+					resultColor = r<<16 | g<<8 | b;
+					
+					var trans:ColorTransform = e.life_bar_.transform.colorTransform;
+					trans.color = resultColor;
+					
+					e.life_bar_.transform.colorTransform = trans;
+					
+					//If the enemy is dead, remove him from scene
+					if (e.hp_ <= 0) {
+						e.mc_.x = -10;
+						e.mc_.y = -10;
+
+						Misc.getStage().removeChild(active_enemies_[i].life_bar_);
+						
+						idle_enemies_.push(e);
+						active_enemies_.splice(i, 1);
+					}
 				}
 				
 				i++;

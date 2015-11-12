@@ -45,43 +45,10 @@ package screens
 		
 		
 		private function loop(e:Event):void {
-			moveEnemies();
+			manager_.moveEnemies();
 			manager_.moveShots();
 		}
 
-		
-		private function moveEnemies():void {
-			
-			var i:uint = 0;
-			
-			for each (var e:Enemy in manager_.active_enemies_) {
-				if (e.mc_.x > 0) {
-					e.mc_.x -= 10;
-					//caculate the probability an enemy will shoot
-					if (Math.random() < e.fire_probability_)
-						e.Shoot();
-				} else  {
-					e.mc_.x = Misc.getStage().stageWidth;
-				}
-				
-				if (manager_.ship_.checkShotCollisions(e)) {
-					
-					//If the enemy is dead, remove him from scene
-					if (e.hp_ <= 0) {
-						e.mc_.x = -10;
-						e.mc_.y = -10;
-
-						manager_.idle_enemies_.push(e);
-						manager_.active_enemies_.splice(i, 1);
-						
-						
-					}
-				}
-				
-				i++;
-			}
-		}
-		
 		
 		private function nextScreen():void { 
 			killScreen();
