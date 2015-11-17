@@ -11,11 +11,12 @@ package enemies {
 		public var init_hp_:Number;
 		public var hp_:Number;
 		public var mc_:MovieClip;
+		public var explosion_mc_:MovieClip;
 		public var fire_probability_:Number;
 		public var points_:Number;
 		
 		public var life_bar_:Shape;
-		
+		public var exploding_:Boolean = false;
 		
 		public function Enemy(x:uint, y:uint, hp:Number, fire_probability:Number) {
 			
@@ -45,7 +46,7 @@ package enemies {
 		}
 		
 		public function move():Boolean {
-			if (mc_.x > 0) {
+			if (mc_.x > 0 && !exploding_) {
 				mc_.x -= 10;
 				life_bar_.x -= 10;
 				

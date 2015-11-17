@@ -22,4 +22,28 @@
 			<amount>2</amount>
 		</enemies>
 	</time>
+	<time id="15">
+		<enemies>
+			<type>3</type>
+			<amount>1</amount>
+		</enemies>
+	</time>
+	<time id="16">
+		<enemies>
+			<type>3</type>
+			<amount>1</amount>
+		</enemies>
+	</time>
+	<time id="17">
+		<enemies>
+			<type>3</type>
+			<amount>1</amount>
+		</enemies>
+	</time>
+	<time id="18">
+		<enemies>
+			<type>3</type>
+			<amount>1</amount>
+		</enemies>
+	</time>
 </level>

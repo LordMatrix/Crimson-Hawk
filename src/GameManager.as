@@ -4,6 +4,7 @@ package
 	import enemies.Enemy;
 	import enemies.Saucer1;
 	import enemies.Saucer2;
+	import enemies.Saucer3;
 	import flash.display.MovieClip;
 	import flash.display.Shape;
 	import flash.events.Event;
@@ -86,7 +87,7 @@ package
 			
 			for each (var wave:XML in level.time) {
 				
-				trace(wave.@id);
+				//trace(wave.@id);
 				timers[i] = new Timer(wave.@id * 1000);
 				
 				timers[i].addEventListener(TimerEvent.TIMER, processWave(wave, i));
@@ -100,7 +101,7 @@ package
 		
 		private function processWave(wave:XML, i:uint):Function {
 			return function(e:TimerEvent):void {
-				trace(wave);
+				//trace(wave);
 				
 				for each (var pack:XML in wave.enemies) {
 					createEnemies(pack.type, pack.amount);
@@ -117,16 +118,19 @@ package
 				
 				var x:uint = Misc.getStage().stageWidth + (100 * (i + 1));
 				var y:uint = Misc.random(10, Misc.getStage().stageHeight - 10);
-				
+				var foe:Enemy;
 				switch(type) {
 					case 1:
-						var foe:Enemy = new Saucer1(x, y, 3.0, 0.005);
+						foe = new Saucer1(x, y, 3.0, 0.005);
 						break;
 					case 2:
-						var foe:Enemy = new Saucer2(x, y, 3.0, 0.005);
+						foe = new Saucer2(x, y, 1.0, 0.005);
+						break;
+					case 3:
+						foe = new Saucer3(x, 20, 4.0, 0.005);
 						break;
 					default:
-						var foe:Enemy = new Saucer1(x, y, 3.0, 0.005);
+						foe = new Saucer1(x, y, 3.0, 0.005);
 						break;
 				}
 				
@@ -173,9 +177,9 @@ package
 			var i:uint = 0;
 			
 			for each (var s:Shot in enemy_shots_) {
-				if (s.shape_.x > 0) {
+				if (s.shape_.x > 0 && s.shape_.y < Misc.getStage().stageHeight) {
 					s.shape_.x += s.speedX_;
-					//s.shape_.y += s.speedY_;
+					s.shape_.y += s.speedY_;
 				} else  {
 					Misc.getStage().removeChild(s.shape_);
 					enemy_shots_.splice(i, 1);
@@ -191,7 +195,7 @@ package
 			var i:uint = 0;
 			
 			for each (var e:Enemy in active_enemies_) {
-				if (!e.move()) {
+				if (!e.exploding_ && !e.move()) {
 					Misc.getStage().removeChild(e.mc_);
 					Misc.getStage().removeChild(e.life_bar_);
 					active_enemies_.splice(i, 1);
@@ -208,7 +212,7 @@ package
 			
 			for each (var e:Enemy in active_enemies_) {
 				
-				if (ship_.checkShotCollisions(e)) {
+				if (!e.exploding_ && ship_.checkShotCollisions(e)) {
 					e.life_bar_.width = (LIFEBAR_WIDTH * e.hp_ ) / e.init_hp_;
 					
 					var resultColor:uint; 
@@ -224,7 +228,28 @@ package
 					e.life_bar_.transform.colorTransform = trans;
 					
 					//If the enemy is dead, remove him from scene
-					if (e.hp_ <= 0) {
+					if (e.hp_ <= 0 && !e.exploding_) {
+						trace("Exploding enemy");
+						
+						Misc.getStage().removeChild(e.mc_);
+						
+						active_enemies_[i].explosion_mc_ = new explosion1();
+						active_enemies_[i].explosion_mc_.x = e.mc_.x;
+						active_enemies_[i].explosion_mc_.y = e.mc_.y;
+						
+						Misc.getStage().addChild(active_enemies_[i].explosion_mc_);
+						active_enemies_[i].exploding_ = true;
+						
+						var exp_mc:MovieClip = active_enemies_[i].explosion_mc_;
+						exp_mc.addFrameScript(exp_mc.totalFrames - 1, destroyExplosion);
+						active_enemies_[i].explosion_mc_.play();
+						
+						function destroyExplosion():void {
+							exp_mc.stop();
+							Misc.getStage().removeChild(exp_mc);
+						}
+						
+						/*
 						e.mc_.x = -10;
 						e.mc_.y = -10;
 
@@ -232,12 +257,15 @@ package
 						
 						idle_enemies_.push(e);
 						active_enemies_.splice(i, 1);
+						*/
 					}
 				}
 				
 				i++;
 			}
 		}
+		
+		
 	}
 
 }
