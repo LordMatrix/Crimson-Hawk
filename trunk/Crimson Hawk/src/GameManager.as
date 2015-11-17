@@ -180,6 +180,11 @@ package
 				if (s.shape_.x > 0 && s.shape_.y < Misc.getStage().stageHeight) {
 					s.shape_.x += s.speedX_;
 					s.shape_.y += s.speedY_;
+					
+					//Check ship collisions
+					if (s.shape_.hitTestObject(ship_.mc_)) {
+						trace("SHIP HAS BEEN HIT");
+					}
 				} else  {
 					Misc.getStage().removeChild(s.shape_);
 					enemy_shots_.splice(i, 1);

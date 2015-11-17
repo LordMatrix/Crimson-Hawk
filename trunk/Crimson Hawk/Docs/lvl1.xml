@@ -46,4 +46,24 @@
 			<amount>1</amount>
 		</enemies>
 	</time>
+	<time id="22">
+		<enemies>
+			<type>3</type>
+			<amount>1</amount>
+		</enemies>
+		<enemies>
+			<type>1</type>
+			<amount>2</amount>
+		</enemies>
+	</time>
+	<time id="24">
+		<enemies>
+			<type>3</type>
+			<amount>1</amount>
+		</enemies>
+		<enemies>
+			<type>2</type>
+			<amount>2</amount>
+		</enemies>
+	</time>
 </level>
