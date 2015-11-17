@@ -54,6 +54,8 @@
   <libraryPaths>
     <element path="assets\CH_Assets.swc" />
     <element path="lib\greensock.swc" />
+    <element path="assets\CH_saucers.swc" />
+    <element path="assets\CH_explosions.swc" />
   </libraryPaths>
   <!-- External Libraries -->
   <externalLibraryPaths>
