@@ -1,5 +1,4 @@
-package 
-{
+package enemies {
 	import com.greensock.TweenMax;
 	import flash.display.MovieClip;
 	import flash.display.Shape;
@@ -13,19 +12,20 @@ package
 		public var hp_:Number;
 		public var mc_:MovieClip;
 		public var fire_probability_:Number;
+		public var points_:Number;
 		
 		public var life_bar_:Shape;
 		
 		
-		public function Enemy(hp:Number, mc:MovieClip, fire_probability:Number) {
+		public function Enemy(x:uint, y:uint, hp:Number, fire_probability:Number) {
+			
 			this.init_hp_ = hp;
 			this.hp_ = hp;
-			this.mc_ = mc;
 			this.fire_probability_ = fire_probability;
 			
 			this.life_bar_ = Graphics.getRectangle(0, 0, 40, 5, 0x00cc00, 0.6);
-			life_bar_.x = mc_.x-20;
-			life_bar_.y = mc_.y+18;
+			life_bar_.x = x-20;
+			life_bar_.y = y+18;
 			
 			TweenMax.to(this.life_bar_, 0, { blurFilter: { blurX:3 }} );
 			
@@ -44,7 +44,7 @@ package
 			Misc.getStage().addChild(s.shape_);
 		}
 		
-		public function move():void {
+		public function move():Boolean {
 			if (mc_.x > 0) {
 				mc_.x -= 10;
 				life_bar_.x -= 10;
@@ -52,9 +52,10 @@ package
 				//caculate the probability an enemy will shoot
 				if (Math.random() < fire_probability_)
 					Shoot();
+					
+				return true;
 			} else {
-				mc_.x = Misc.getStage().stageWidth;
-				life_bar_.x = Misc.getStage().stageWidth - 20;
+				return false;
 			}
 		}
 	}

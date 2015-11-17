@@ -1,19 +1,25 @@
 <?xml version="1.0" encoding="utf-8" ?>
 <level id="1">
-	<time id="5">
+	<time id="1">
 		<enemies>
 			<type>1</type>
 			<amount>5</amount>
 		</enemies>
+	</time>
+	<time id="6">
 		<enemies>
-			<type>3</type>
-			<amount>8</amount>
+			<type>2</type>
+			<amount>5</amount>
 		</enemies>
 	</time>
 	<time id="10">
 		<enemies>
 			<type>1</type>
-			<amount>5</amount>
+			<amount>3</amount>
+		</enemies>
+		<enemies>
+			<type>2</type>
+			<amount>2</amount>
 		</enemies>
 	</time>
 </level>

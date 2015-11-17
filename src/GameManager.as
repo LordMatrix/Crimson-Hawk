@@ -1,6 +1,9 @@
 package 
 {
 	import com.greensock.TweenMax;
+	import enemies.Enemy;
+	import enemies.Saucer1;
+	import enemies.Saucer2;
 	import flash.display.MovieClip;
 	import flash.display.Shape;
 	import flash.events.Event;
@@ -108,15 +111,25 @@ package
 		}
 		
 		
-		private function createEnemies(type, amount) {
+		private function createEnemies(type:Number, amount:Number):void {
 			
 			for (var i:uint=0; i < amount; i++) {
 				
-				var foeMC:MovieClip = new saucer1();
-				foeMC.x = Misc.getStage().stageWidth + (100 * (i + 1));
-				foeMC.y = Misc.random(10, Misc.getStage().stageHeight - 10);
+				var x:uint = Misc.getStage().stageWidth + (100 * (i + 1));
+				var y:uint = Misc.random(10, Misc.getStage().stageHeight - 10);
 				
-				var foe:Enemy = new Enemy(3.0, foeMC, 0.005);
+				switch(type) {
+					case 1:
+						var foe:Enemy = new Saucer1(x, y, 3.0, 0.005);
+						break;
+					case 2:
+						var foe:Enemy = new Saucer2(x, y, 3.0, 0.005);
+						break;
+					default:
+						var foe:Enemy = new Saucer1(x, y, 3.0, 0.005);
+						break;
+				}
+				
 				active_enemies_.push(foe);
 				Misc.getStage().addChild(foe.mc_);
 			}
@@ -175,8 +188,16 @@ package
 		
 		public function moveEnemies():void {
 			
+			var i:uint = 0;
+			
 			for each (var e:Enemy in active_enemies_) {
-				e.move();
+				if (!e.move()) {
+					Misc.getStage().removeChild(e.mc_);
+					Misc.getStage().removeChild(e.life_bar_);
+					active_enemies_.splice(i, 1);
+				}
+				
+				i++;
 			}
 		}
 		
