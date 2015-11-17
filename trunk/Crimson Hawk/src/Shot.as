@@ -20,7 +20,7 @@ package
 			this.shape_ = shape;
 			this.damage_ = damage;
 			this.speedX_ = speedX;
-			this.speedY_ = speedY_;
+			this.speedY_ = speedY;
 			this.whose_ = whose;
 		}
 		
