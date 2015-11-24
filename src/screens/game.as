@@ -9,6 +9,7 @@ package screens
 	import flash.events.Event;
 	import flash.events.KeyboardEvent;
 	import flash.events.TimerEvent;
+	import flash.text.TextField;
 	import flash.ui.Keyboard;
 	import flash.utils.Timer;
 	/**
@@ -19,6 +20,8 @@ package screens
 		
 		private var backgr_:Background;
 		private var manager_:GameManager;
+		private var points_txt_:TextField;
+		private var lives_txt_:TextField;
 		
 		public function game() {
 			super();
@@ -32,10 +35,14 @@ package screens
 		
 			backgr_ = new Background();
 			manager_ = GameManager.getInstance();
+			points_txt_ = Misc.getTextField("Points: "+String(manager_.points_), 0, 0, 20, 0x990000);
+			lives_txt_ = Misc.getTextField("Lives: "+String(manager_.lives_), 0, 20, 20, 0x990000);
 		}
 		
 		private function addObjects():void { 
 			addChild(backgr_);
+			addChild(points_txt_);
+			addChild(lives_txt_);
 		}
 		
 		
@@ -48,6 +55,9 @@ package screens
 			manager_.moveEnemies();
 			manager_.moveShots();
 			manager_.checkCollisions();
+			
+			points_txt_.text = "Points: " + String(manager_.points_);
+			lives_txt_.text = "Lives: " + String(manager_.lives_);
 		}
 
 		

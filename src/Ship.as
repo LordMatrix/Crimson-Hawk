@@ -13,19 +13,21 @@ package
 	 */
 	public class Ship {
 		
+		public var init_hp_:Number;
+		public var hp_:Number;
 		
 		private var rising:Boolean = false;
 		private var falling:Boolean = false;
 		private var advancing:Boolean = false;
 		private var retreating:Boolean = false;
 		
-		public var hp_:Number;
 		public var mc_:MovieClip;
-		
+		public var life_bar_:Shape;
 		
 		
 		public function Ship(hp:Number, mc:MovieClip) {
 			this.hp_ = hp;
+			this.init_hp_ = hp;
 			this.mc_ = mc;
 			
 			init();
@@ -33,8 +35,11 @@ package
 		}
 		
 		private function init():void {
-				
-			
+			this.life_bar_ = Graphics.getRectangle(0, 0, 50, 30, 0x00cc00, 0.6);
+			life_bar_.x = 20;
+			life_bar_.y = 20;
+			TweenMax.to(this.life_bar_, 0, { blurFilter: { blurX:3 }} );
+			Misc.getStage().addChild(life_bar_);
 		}
 		
 		private function addEventListeners():void {

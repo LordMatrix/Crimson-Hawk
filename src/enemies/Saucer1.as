@@ -12,6 +12,7 @@ package enemies {
 			foeMC.x = x;
 			foeMC.y = y;
 			this.mc_ = foeMC;
+			points_ = 2;
 		}
 		
 	}

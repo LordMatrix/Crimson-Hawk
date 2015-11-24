@@ -16,7 +16,7 @@
     </define>
     <define append="true">
       <name>CONFIG::timeStamp</name>
-      <value>'17/11/2015'</value>
+      <value>'24/11/2015'</value>
     </define>
     <define append="true">
       <name>CONFIG::air</name>
@@ -40,6 +40,7 @@
       <path-element>C:\Users\vazquezre\Desktop\Prog\SVN\trunk\Crimson Hawk\lib\greensock.swc</path-element>
       <path-element>C:\Users\vazquezre\Desktop\Prog\SVN\trunk\Crimson Hawk\assets\CH_saucers.swc</path-element>
       <path-element>C:\Users\vazquezre\Desktop\Prog\SVN\trunk\Crimson Hawk\assets\CH_explosions.swc</path-element>
+      <path-element>C:\Users\vazquezre\Desktop\Prog\SVN\trunk\Crimson Hawk\assets\CHassetsBoss.swc</path-element>
     </library-path>
   </compiler>
   <file-specs>
