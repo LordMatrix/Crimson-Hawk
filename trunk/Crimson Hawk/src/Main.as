@@ -1,3 +1,5 @@
+//SoundAS gestiona sonidos (github)
+//texture packer para crear spritesheets
 package 
 {
 	import flash.display.Sprite;

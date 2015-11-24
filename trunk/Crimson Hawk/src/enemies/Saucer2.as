@@ -15,6 +15,7 @@ package enemies {
 			foeMC.x = x;
 			foeMC.y = y;
 			this.mc_ = foeMC;
+			points_ = 1;
 			frame_ = Misc.random(0, 359);
 		}
 		
