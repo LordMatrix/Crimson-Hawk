@@ -10,11 +10,8 @@ package enemies {
 	public class Saucer3 extends Enemy {
 		
 		public function Saucer3(x:uint, y:uint, hp:Number, fire_probability:Number) {
-			super(x,y,hp,fire_probability);
 			var foeMC:MovieClip = new saucer3();
-			foeMC.x = x;
-			foeMC.y = y;
-			this.mc_ = foeMC;
+			super(x,y,hp,fire_probability,foeMC);
 			points_ = 2;
 		}
 		

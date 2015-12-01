@@ -10,11 +10,8 @@ package enemies
 		private var frame_:Number;
 		
 		public function HeadBoss(x:uint, y:uint, hp:Number, fire_probability:Number) {
-			super(x,y,hp,fire_probability);
 			var foeMC:MovieClip = new HeadBossMC();
-			foeMC.x = x;
-			foeMC.y = y;
-			this.mc_ = foeMC;
+			super(x,y,hp,fire_probability, foeMC);
 			points_ = 30;
 			frame_ = Misc.random(0, 359);
 		}

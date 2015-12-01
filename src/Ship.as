@@ -1,5 +1,6 @@
 package 
 {
+	import com.greensock.TweenLite;
 	import com.greensock.TweenMax;
 	import flash.display.MovieClip;
 	import flash.display.Shape;
@@ -61,6 +62,7 @@ package
 				this.mc_.x -= 5;
 				
 			moveShots();
+			TweenLite.to(mc_, 0, {removeTint:true});
 		}
 		
 		private function onKeyDown(e:KeyboardEvent):void {
@@ -155,13 +157,28 @@ package
 					shot.shape_.x = -10;
 					shot.shape_.y = -10;
 					
-					item.hp_ -= shot.damage_;
+					item.damage(shot.damage_)
 				}
 			
 				i++;
 			}
 			
 			return collided;
+		}
+		
+		
+		public function damage(amount:uint):void {
+			hp_ -= amount;
+			trace ("Ship HP is: " + hp_);
+			GameManager.getInstance().drawLifeBar(this);
+			
+			//turn ship red
+			TweenLite.to(mc_, 0, { tint:0xff0000 } );
+			
+			if (hp_ <= 0) {
+				hp_ = init_hp_;
+				GameManager.getInstance().lives_--;
+			}
 		}
 		
 	}
