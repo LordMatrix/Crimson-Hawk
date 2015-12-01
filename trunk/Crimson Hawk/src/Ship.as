@@ -178,6 +178,8 @@ package
 			if (hp_ <= 0) {
 				hp_ = init_hp_;
 				GameManager.getInstance().lives_--;
+				mc_.x = 100;
+				mc_.y = Misc.getStage().stageHeight / 2;
 			}
 		}
 		
