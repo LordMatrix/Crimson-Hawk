@@ -7,7 +7,7 @@ package enemies {
 	 * ...
 	 * @author Marcos Vazquez
 	 */
-	public class Enemy {
+	public class Enemy extends Vessel {
 		
 		public var init_hp_:Number;
 		public var hp_:Number;
@@ -71,6 +71,8 @@ package enemies {
 			GameManager.getInstance().drawLifeBar(this);
 			if (hp_ <= 0 && !exploding_) {
 				explode();
+				//Add points to the player
+				GameManager.getInstance().points_ += this.points_;
 				Misc.getStage().removeChild(life_bar_);
 			} else {
 				TweenLite.to(mc_, 0, { tint:0xff0000 } );

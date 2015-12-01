@@ -41,7 +41,7 @@ package
 		public static var instance_:GameManager;
 		
 		public var points_:uint;
-		public var lives_:uint;
+		public var lives_:int;
 		
 		public var active_enemies_:Vector.<Enemy>;
 		public var idle_enemies_:Vector.<Enemy>;
@@ -132,7 +132,7 @@ package
 						foe = new Saucer3(x, 20, 4.0, 0.005);
 						break;
 					case 10:
-						foe = new HeadBoss(Misc.getStage().stageWidth + 50, Misc.getStage().stageHeight / 2, 200.0, 0.1);
+						foe = new HeadBoss(Misc.getStage().stageWidth + 50, Misc.getStage().stageHeight / 2, 50.0, 0.1);
 						break;
 					default:
 						foe = new Saucer1(x, y, 3.0, 0.005);
@@ -241,9 +241,10 @@ package
 			
 			for (var i:uint = 0; i < active_enemies_.length; i++ ) {
 				if (!active_enemies_[i].exploding_) {
-					if (ship_.checkShotCollisions(active_enemies_[i])) {
-						points_ += (active_enemies_[i].points_);
-					} else if (active_enemies_[i].mc_.hitTestObject(ship_.mc_)) {
+					//Check enemy-shots collisions
+					ship_.checkShotCollisions(active_enemies_[i]);
+					//Check enemy-ship collisions
+					if (active_enemies_[i].mc_.hitTestObject(ship_.mc_)) {
 						ship_.damage(2);
 						active_enemies_[i].damage(2);
 					}
