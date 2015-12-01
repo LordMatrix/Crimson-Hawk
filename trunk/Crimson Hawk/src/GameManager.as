@@ -1,5 +1,6 @@
 package 
 {
+	import com.greensock.TweenLite;
 	import com.greensock.TweenMax;
 	import enemies.Enemy;
 	import enemies.HeadBoss;
@@ -131,7 +132,7 @@ package
 						foe = new Saucer3(x, 20, 4.0, 0.005);
 						break;
 					case 10:
-						foe = new HeadBoss(Misc.getStage().stageWidth + 50, Misc.getStage().stageHeight / 2, 200, 0.1);
+						foe = new HeadBoss(Misc.getStage().stageWidth + 50, Misc.getStage().stageHeight / 2, 200.0, 0.1);
 						break;
 					default:
 						foe = new Saucer1(x, y, 3.0, 0.005);
@@ -142,8 +143,6 @@ package
 				Misc.getStage().addChild(foe.mc_);
 			}
 		}
-		
-		
 		
 		
 		private function init():void {
@@ -189,9 +188,7 @@ package
 					
 					//Check ship collisions
 					if (s.shape_.hitTestObject(ship_.mc_)) {
-						trace("SHIP HAS BEEN HIT");
-						ship_.hp_--;
-						drawLifeBar(ship_);
+						ship_.damage(1);
 						Misc.getStage().removeChild(s.shape_);
 						enemy_shots_.splice(i, 1);
 					}
@@ -210,6 +207,7 @@ package
 			var i:uint = 0;
 			
 			for each (var e:Enemy in active_enemies_) {
+				TweenLite.to(e.mc_, 0, {removeTint:true});
 				if (!e.exploding_ && !e.move()) {
 					Misc.getStage().removeChild(e.mc_);
 					Misc.getStage().removeChild(e.life_bar_);
@@ -237,50 +235,19 @@ package
 			e.life_bar_.transform.colorTransform = trans;
 		}
 		
-		public function explodeEnemy(e:Enemy, index:uint):void {
-			Misc.getStage().removeChild(e.mc_);
-						
-			active_enemies_[index].explosion_mc_ = new explosion1();
-			active_enemies_[index].explosion_mc_.x = e.mc_.x;
-			active_enemies_[index].explosion_mc_.y = e.mc_.y;
-			
-			Misc.getStage().addChild(active_enemies_[index].explosion_mc_);
-			active_enemies_[index].exploding_ = true;
-			
-			var explosion_mc:MovieClip = active_enemies_[index].explosion_mc_;
-			explosion_mc.addFrameScript(explosion_mc.totalFrames - 1, destroyExplosion);
-			active_enemies_[index].explosion_mc_.play();
-			
-			function destroyExplosion():void {
-				explosion_mc.stop();
-				Misc.getStage().removeChild(explosion_mc);
-			}
-		}
+		
 		
 		public function checkCollisions():void {
 			
-			var i:uint = 0;
-			
-			for each (var e:Enemy in active_enemies_) {
-				
-				if (!e.exploding_ && ship_.checkShotCollisions(e)) {
-					drawLifeBar(e);
-
-					if (e.hp_ <= 0 && !e.exploding_) {
-						trace("Exploding enemy");
-						explodeEnemy(e, i);
-						//Add points
-						points_ += e.points_;
+			for (var i:uint = 0; i < active_enemies_.length; i++ ) {
+				if (!active_enemies_[i].exploding_) {
+					if (ship_.checkShotCollisions(active_enemies_[i])) {
+						points_ += (active_enemies_[i].points_);
+					} else if (active_enemies_[i].mc_.hitTestObject(ship_.mc_)) {
+						ship_.damage(2);
+						active_enemies_[i].damage(2);
 					}
-				} else if (!e.exploding_ && e.mc_.hitTestObject(ship_.mc_)) {
-					Misc.getStage().removeChild(e.life_bar_);
-					explodeEnemy(e, i);
-					ship_.hp_ -= 2;
-					trace ("Ship HP is: " + ship_.hp_);
-					drawLifeBar(ship_);
 				}
-				
-				i++;
 			}
 		}
 		

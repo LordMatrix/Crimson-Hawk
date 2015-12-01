@@ -1,4 +1,5 @@
 package enemies {
+	import com.greensock.TweenLite;
 	import com.greensock.TweenMax;
 	import flash.display.MovieClip;
 	import flash.display.Shape;
@@ -18,7 +19,11 @@ package enemies {
 		public var life_bar_:Shape;
 		public var exploding_:Boolean = false;
 		
-		public function Enemy(x:uint, y:uint, hp:Number, fire_probability:Number) {
+		public function Enemy(x:uint, y:uint, hp:Number, fire_probability:Number, foeMC:MovieClip) {
+			
+			this.mc_ = foeMC;
+			mc_.x = x;
+			mc_.y = y;
 			
 			this.init_hp_ = hp;
 			this.hp_ = hp;
@@ -26,7 +31,7 @@ package enemies {
 			
 			this.life_bar_ = Graphics.getRectangle(0, 0, 40, 5, 0x00cc00, 0.6);
 			life_bar_.x = x-20;
-			life_bar_.y = y+18;
+			life_bar_.y = y + mc_.height/2 + 5;
 			
 			TweenMax.to(this.life_bar_, 0, { blurFilter: { blurX:3 }} );
 			
@@ -57,6 +62,39 @@ package enemies {
 				return true;
 			} else {
 				return false;
+			}
+		}
+		
+		
+		public function damage(amount:uint):void {
+			hp_ -= amount;
+			GameManager.getInstance().drawLifeBar(this);
+			if (hp_ <= 0 && !exploding_) {
+				explode();
+				Misc.getStage().removeChild(life_bar_);
+			} else {
+				TweenLite.to(mc_, 0, { tint:0xff0000 } );
+			}
+		}
+		
+		
+		public function explode():void {
+			Misc.getStage().removeChild(mc_);
+						
+			explosion_mc_ = new explosion1();
+			explosion_mc_.x = mc_.x;
+			explosion_mc_.y = mc_.y;
+			
+			Misc.getStage().addChild(explosion_mc_);
+			exploding_ = true;
+			
+			var explosion_mc:MovieClip = explosion_mc_;
+			explosion_mc.addFrameScript(explosion_mc.totalFrames - 1, destroyExplosion);
+			explosion_mc_.play();
+			
+			function destroyExplosion():void {
+				explosion_mc.stop();
+				Misc.getStage().removeChild(explosion_mc);
 			}
 		}
 	}
