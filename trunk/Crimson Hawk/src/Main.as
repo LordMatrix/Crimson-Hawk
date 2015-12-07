@@ -6,6 +6,7 @@ package
 	import flash.events.Event;
 	import screens.game;
 	import screens.select;
+	import screens.shop;
 	import screens.welcome;
 	import flash.display.MovieClip;
 	import flash.display.Sprite;
@@ -21,6 +22,7 @@ package
 		private var miMC:MovieClip = new MovieClip();
 		private var welcomeScreen:welcome;
 		private var gameScreen:game;
+		private var shopScreen:shop;
 		
 		
 		public function Main():void 
@@ -48,12 +50,10 @@ package
 					gameScreen = new game();
 					addChild(gameScreen);
 					break;
-					/*
 				case 3:
-					gameScreen = new game();
-					addChild(gameScreen);
+					shopScreen = new shop();
+					addChild(shopScreen);
 					break;
-					*/
 				default:
 					trace ("Screen unknown");
 			}

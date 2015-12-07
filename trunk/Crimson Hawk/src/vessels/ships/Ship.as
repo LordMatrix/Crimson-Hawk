@@ -1,4 +1,4 @@
-package 
+package vessels.ships 
 {
 	import com.greensock.TweenLite;
 	import com.greensock.TweenMax;
@@ -7,23 +7,20 @@ package
 	import flash.events.Event;
 	import flash.events.KeyboardEvent;
 	import flash.ui.Keyboard;
+	import vessels.Vessel;
 	
 	/**
 	 * ...
 	 * @author Marcos Vazquez
 	 */
-	public class Ship {
-		
-		public var init_hp_:Number;
-		public var hp_:Number;
+	public class Ship extends Vessel {
 		
 		private var rising:Boolean = false;
 		private var falling:Boolean = false;
 		private var advancing:Boolean = false;
 		private var retreating:Boolean = false;
 		
-		public var mc_:MovieClip;
-		public var life_bar_:Shape;
+		private var invulnerable:Boolean = false;
 		
 		
 		public function Ship(hp:Number, mc:MovieClip) {
@@ -36,7 +33,7 @@ package
 		}
 		
 		private function init():void {
-			this.life_bar_ = Graphics.getRectangle(0, 0, 50, 30, 0x00cc00, 0.6);
+			this.life_bar_ = Shapes.getRectangle(0, 0, 50, 30, 0x00cc00, 0.6);
 			life_bar_.x = 20;
 			life_bar_.y = 20;
 			TweenMax.to(this.life_bar_, 0, { blurFilter: { blurX:3 }} );
@@ -80,7 +77,7 @@ package
 					retreating = true;
 					break;
 				case Keyboard.SPACE:
-					if (GameManager.getInstance().fired_shots_.length < GameManager.getInstance().MAX_SHOTS) {
+					if (!exploding_ && GameManager.getInstance().fired_shots_.length < GameManager.getInstance().MAX_SHOTS) {
 						Shoot();
 					}
 					break;
@@ -110,7 +107,7 @@ package
 			}
 		}
 		
-		public function Shoot():void {
+		override public function Shoot():void {
 			var s:Shot = GameManager.getInstance().spare_shots_.pop();
 						
 			s.shape_.x = this.mc_.x + this.mc_.width/3;
@@ -167,7 +164,7 @@ package
 		}
 		
 		
-		public function damage(amount:uint):void {
+		override public function damage(amount:uint):void {
 			hp_ -= amount;
 			trace ("Ship HP is: " + hp_);
 			GameManager.getInstance().drawLifeBar(this);
@@ -176,11 +173,20 @@ package
 			TweenLite.to(mc_, 0, { tint:0xff0000 } );
 			
 			if (hp_ <= 0) {
+				explode();
 				hp_ = init_hp_;
 				GameManager.getInstance().lives_--;
 				mc_.x = 100;
 				mc_.y = Misc.getStage().stageHeight / 2;
 			}
+		}
+		
+		
+		override public function destroyExplosion():void {
+			explosion_mc_.stop();
+			Misc.getStage().removeChild(explosion_mc_);
+			Misc.getStage().addChild(mc_);
+			exploding_ = false;
 		}
 		
 	}
