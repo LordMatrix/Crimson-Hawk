@@ -7,10 +7,10 @@ package
 	 * ...
 	 * @author Lord Matrix
 	 */
-	public class Graphics extends Sprite
+	public class Shapes extends Sprite
 	{
 		
-		public function Graphics() 
+		public function Shapes() 
 		{
 			
 		}

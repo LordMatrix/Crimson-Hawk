@@ -58,12 +58,18 @@ package screens
 			
 			points_txt_.text = "Points: " + String(manager_.points_);
 			lives_txt_.text = "Lives: " + String(manager_.lives_);
+			
+			//If the enemy waves are over and there are no enemies left, go to the next screen
+			if (manager_.waves_finished && manager_.active_enemies_.length == 0) {
+				trace("Ending screen");
+				nextScreen();
+			}
 		}
 
 		
 		private function nextScreen():void { 
 			killScreen();
-			Misc.getMain().loadScreen(1);
+			Misc.getMain().loadScreen(3);
 		}
 		
 		private function killScreen():void {
@@ -80,6 +86,8 @@ package screens
 			
 			removeChild(backgr_);
 			backgr_ = null;
+			//Remove ship from scene
+			Misc.getStage().removeChild(manager_.ship_.mc_);
 		}
 		
 	}

@@ -10,15 +10,14 @@ package
 	 */
 	//Static class
 	
-	public class Misc 
-	{
+	public class Misc {
+		
 		private static var _main:*;
 		private static var _stage:Stage;
 		private static var _stageHeight:uint;
 		private static var _stageWidth:uint;
 		
-		public static function setMain(main:*) :void
-		{
+		public static function setMain(main:*) :void {
 			_main = main;
 			_stage = main.stage;
 			_stageHeight = main.stage.stageHeight;
@@ -29,18 +28,15 @@ package
 			return _main;
 		}
 		
-		static public function getStage():Stage 
-		{
+		static public function getStage():Stage {
 			return _stage;
 		}
 		
-		static public function getStageHeight():uint 
-		{
+		static public function getStageHeight():uint {
 			return _stageHeight;
 		}
 		
-		static public function getStageWidth():uint 
-		{
+		static public function getStageWidth():uint {
 			return _stageWidth;
 		}
 		

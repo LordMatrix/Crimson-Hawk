@@ -2,11 +2,11 @@ package
 {
 	import com.greensock.TweenLite;
 	import com.greensock.TweenMax;
-	import enemies.Enemy;
-	import enemies.HeadBoss;
-	import enemies.Saucer1;
-	import enemies.Saucer2;
-	import enemies.Saucer3;
+	import vessels.enemies.Enemy;
+	import vessels.enemies.HeadBoss;
+	import vessels.enemies.Saucer1;
+	import vessels.enemies.Saucer2;
+	import vessels.enemies.Saucer3;
 	import flash.display.MovieClip;
 	import flash.display.Shape;
 	import flash.events.Event;
@@ -15,6 +15,7 @@ package
 	import flash.net.URLLoader;
 	import flash.net.URLRequest;
 	import flash.utils.Timer;
+	import vessels.ships.Ship;
 	/**
 	 * ...
 	 * @author Marcos Vázquez
@@ -26,9 +27,6 @@ package
 		public var level:XML;
 		private var myLoader:URLLoader = new URLLoader();
 		private var timers:Vector.<Timer>;
-		
-		
-		
 		
 		
 		/** Constants **/
@@ -46,13 +44,15 @@ package
 		public var active_enemies_:Vector.<Enemy>;
 		public var idle_enemies_:Vector.<Enemy>;
 		
-		public var ship_:Ship;
+		public var ship_:vessels.ships.Ship;
 			
 		public var enemy_shots_:Vector.<Shot>;
 		
 		public var fired_shots_:Vector.<Shot>;
 		public var spare_shots_:Vector.<Shot>;
 
+		public var waves_finished:Boolean = false;
+		
 		
 		public static function getInstance():GameManager {
 			if (!instance_) {
@@ -77,7 +77,7 @@ package
 		
 		
 		private function parseLevel():void {
-			myLoader.load(new URLRequest("../Docs/lvl1.xml"));
+			myLoader.load(new URLRequest("../Docs/lvl2.xml"));
 			myLoader.addEventListener(Event.COMPLETE, processXML);
 		}
 		
@@ -86,10 +86,12 @@ package
 			//trace(level);
 			
 			var i:uint = 0;
+			var last_time:uint = 0;
 			
 			for each (var wave:XML in level.time) {
 				
 				//trace(wave.@id);
+				last_time = wave.@id;
 				timers[i] = new Timer(wave.@id * 1000);
 				
 				timers[i].addEventListener(TimerEvent.TIMER, processWave(wave, i));
@@ -98,8 +100,19 @@ package
 				i++;
 			}
 			
+			//Set the flag when all the enemy waves have passed
+			timers[i] = new Timer(last_time * 1000);
+			timers[i].addEventListener(TimerEvent.TIMER, setWavesFinished(i));
+			timers[i].start();
 		}
 		
+		
+		private function setWavesFinished(i:uint):Function {
+			return function(e:TimerEvent):void {
+				waves_finished = true;
+				timers[i].stop();
+			}
+		}
 		
 		private function processWave(wave:XML, i:uint):Function {
 			return function(e:TimerEvent):void {
@@ -158,7 +171,7 @@ package
 			
 			for (var i:uint=0; i < MAX_SHOTS; i++) {
 				
-				var shot_shape:Shape = Graphics.getEllipse(0, 0, 25, 8, 0x990000, 0.6);
+				var shot_shape:Shape = Shapes.getEllipse(0, 0, 25, 8, 0x990000, 0.6);
 				TweenMax.to(shot_shape, 0, { blurFilter: { blurX:10 }} );
 				
 				var shot:Shot = new Shot(shot_shape, 1, 30, 0);
@@ -171,7 +184,7 @@ package
 			shipMC.x = 100;
 			shipMC.y = Misc.getStage().stageHeight / 2;
 			
-			ship_ = new Ship(3, shipMC);
+			ship_ = new vessels.ships.Ship(3, shipMC);
 			
 			Misc.getStage().addChild(ship_.mc_);
 		}
@@ -187,7 +200,7 @@ package
 					s.shape_.y += s.speedY_;
 					
 					//Check ship collisions
-					if (s.shape_.hitTestObject(ship_.mc_)) {
+					if (!ship_.exploding_ && s.shape_.hitTestObject(ship_.mc_)) {
 						ship_.damage(1);
 						Misc.getStage().removeChild(s.shape_);
 						enemy_shots_.splice(i, 1);
@@ -237,6 +250,7 @@ package
 		
 		
 		
+		//Checks enemy collisions with allied shots && ship
 		public function checkCollisions():void {
 			
 			for (var i:uint = 0; i < active_enemies_.length; i++ ) {
@@ -244,12 +258,18 @@ package
 					//Check enemy-shots collisions
 					ship_.checkShotCollisions(active_enemies_[i]);
 					//Check enemy-ship collisions
-					if (active_enemies_[i].mc_.hitTestObject(ship_.mc_)) {
+					if (!ship_.exploding_ && active_enemies_[i].mc_.hitTestObject(ship_.mc_)) {
 						ship_.damage(2);
 						active_enemies_[i].damage(2);
 					}
 				}
 			}
+		}
+		
+		
+		public function reset():void {
+			timers = new Vector.<Timer>();
+			parseLevel();
 		}
 		
 		

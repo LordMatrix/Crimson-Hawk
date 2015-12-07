@@ -1,14 +1,8 @@
-Use GSAP TweenMax
+incrementar progresivamente la dificultad por niveles
 
-enemigos que aparecerán de forma aleatoria, incrementando progresivamente la dificultad
-
-vidas y puntos
+puntos compran mejoras
 
 Pantalla de game over aparte y clara
-
-Al menos 2 tipos diferentes de enemigos
-
-Intro -> Game -> Game Over
 
 
 ======================
@@ -18,8 +12,6 @@ MERIT
 ----------------
 
 Basic Physics
-Parallax
-Animations with timeline for explosions, collisions or shots
 Sounds & Music
 
 
@@ -30,13 +22,15 @@ Visual Effects (smoke, particles, fire...)
 Several states for ship/enemies
 Difficulty levels
 Detailed background animations
-BOSS!!
 Buying weapons & powerups between levels
 AI patterns
 Pool methodologies
 
 
 
-NOTES
-----------------
-xml-like specs of enemies(maybe type and amount), times of appearance and positions
+
+- button to the next level
+
+// Create shop button class with text, price, image and effect
+// new Ship (unlocks new buttons, such as shield && new weapons)
+// num_shots, health, damage per shot
