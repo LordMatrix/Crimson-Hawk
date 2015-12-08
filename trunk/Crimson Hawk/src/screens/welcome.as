@@ -46,6 +46,7 @@ package screens
 		
 		private function nextScreen():void { 
 			killScreen();
+			GameManager.getInstance().init();
 			Misc.getMain().loadScreen(2);
 		}
 		

@@ -22,7 +22,7 @@ package screens
 		private var buttons_:Vector.<ShopButton>;
 		private var next_:Sprite;
 		
-		static var levels_:Vector.<int> = new <int>[1, 1, 1, 1, 1];
+		public static var levels_:Vector.<int> = new <int>[1, 1, 1, 1, 1];
 		
 		public function shop() {
 			super();
@@ -49,6 +49,8 @@ package screens
 			addChild(points_txt_);
 			addChild(lives_txt_);
 			
+			var shot:Shot = (manager_.spare_shots_.length > 0) ? manager_.spare_shots_[0] : manager_.fired_shots_[0];
+			
 			//Create shopping buttons
 			var index:int;
 			var bx:int;
@@ -57,7 +59,7 @@ package screens
 			var column:int = 0;
 			var images:Vector.<Sprite> = new <Sprite>[new ammo(), new armor(), new speed(), new damage(), new shield()];
 			var names:Vector.<String> = new <String> ["Ammo", "Armor", "Speed", "Damage", "Shield"];
-			var values:Vector.<Number> = new <Number> [manager_.MAX_SHOTS, manager_.ship_.init_hp_, manager_.ship_.speed_, manager_.spare_shots_[0].damage_, 0];
+			var values:Vector.<Number> = new <Number> [manager_.MAX_SHOTS, manager_.ship_.init_hp_, manager_.ship_.speed_, shot.damage_, 0];
 			var costs:Vector.<int> = new <int>[30, 30, 50, 70, 100];
 			var cost_increments:Vector.<Number> = new <Number>[1.5, 1.5, 1.5, 1.5, 1.5];
 
@@ -182,7 +184,7 @@ package screens
 		private function nextScreen():void { 
 			killScreen();
 			Misc.getStage().addChild(manager_.ship_.mc_);
-			manager_.reset();
+			manager_.resetLevel();
 			Misc.getMain().loadScreen(2);
 		}
 		

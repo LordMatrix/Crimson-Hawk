@@ -35,7 +35,7 @@ package
 		
 		
 		// Vars **/
-		public var MAX_SHOTS:uint = 4;
+		public var MAX_SHOTS:uint;
 		
 		public static var instance_:GameManager;
 		
@@ -52,7 +52,7 @@ package
 		public var fired_shots_:Vector.<Shot>;
 		public var spare_shots_:Vector.<Shot>;
 
-		public var waves_finished:Boolean = false;
+		public var waves_finished:Boolean;
 		
 		
 		public static function getInstance():GameManager {
@@ -68,11 +68,6 @@ package
 		public function GameManager() {
 			super();
 			trace("GameManager");
-			
-			timers = new Vector.<Timer>();
-			parseLevel();
-			
-			init();
 		}
 		
 		
@@ -159,16 +154,18 @@ package
 		}
 		
 		
-		private function init():void {
-				
+		public function init():void {
+			
 			points_ = 1000;
-			lives_ = 3;
+			lives_ = 1;
+			MAX_SHOTS = 4;
+			waves_finished = false;
 			active_enemies_ = new Vector.<Enemy>();
 			idle_enemies_ = new Vector.<Enemy>();
 			enemy_shots_ = new Vector.<Shot>();
 			fired_shots_ = new Vector.<Shot>();
 			spare_shots_ = new Vector.<Shot>();
-			
+			timers = new Vector.<Timer>();
 				
 			createShots();
 			
@@ -181,6 +178,38 @@ package
 			ship_ = new vessels.ships.Ship(3, shipMC);
 			
 			Misc.getStage().addChild(ship_.mc_);
+			
+			parseLevel();
+		}
+		
+		public function resetLevel():void {
+			waves_finished = false;
+			timers = new Vector.<Timer>();
+			parseLevel();
+			createShots();
+		}
+		
+		public function removeObjects():void {
+			var i:int;
+			
+			//remove enemies and their life bars
+			for (i = 0; i < active_enemies_.length; i++) {
+				if (active_enemies_[i].mc_.stage) {
+					Misc.getStage().removeChild(active_enemies_[i].mc_);
+					Misc.getStage().removeChild(active_enemies_[i].life_bar_);
+				}
+			}
+			//delete active_enemies_;
+			
+			//remove enemy shots
+			for (i = 0; i < enemy_shots_.length; i++) {
+				if (enemy_shots_[i].shape_.stage) {
+					Misc.getStage().removeChild(enemy_shots_[i].shape_);
+				}
+			}
+			//delete enemy_shots_;
+			
+			//delete ship_;
 		}
 		
 		
@@ -284,15 +313,6 @@ package
 				}
 			}
 		}
-		
-		
-		public function reset():void {
-			waves_finished = false;
-			timers = new Vector.<Timer>();
-			parseLevel();
-			createShots();
-		}
-		
 		
 	}
 
