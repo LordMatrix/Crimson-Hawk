@@ -5,6 +5,7 @@ package
 	import flash.display.Sprite;
 	import flash.events.Event;
 	import screens.game;
+	import screens.gameover;
 	import screens.select;
 	import screens.shop;
 	import screens.welcome;
@@ -23,6 +24,7 @@ package
 		private var welcomeScreen:welcome;
 		private var gameScreen:game;
 		private var shopScreen:shop;
+		private var gameOverScreen:gameover;
 		
 		
 		public function Main():void 
@@ -53,6 +55,10 @@ package
 				case 3:
 					shopScreen = new shop();
 					addChild(shopScreen);
+					break;
+				case 4:
+					gameOverScreen = new gameover();
+					addChild(gameOverScreen);
 					break;
 				default:
 					trace ("Screen unknown");

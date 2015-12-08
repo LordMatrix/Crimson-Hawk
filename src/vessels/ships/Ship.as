@@ -48,6 +48,13 @@ package vessels.ships
 		}
 
 		
+		private function removeEventListeners():void {
+			Misc.getStage().removeEventListener(Event.ENTER_FRAME, loop);
+			Misc.getStage().removeEventListener(KeyboardEvent.KEY_DOWN, onKeyDown);
+			Misc.getStage().removeEventListener(KeyboardEvent.KEY_UP, onKeyUp);
+		}
+		
+		
 		private function loop(e:Event):void {
 			if (rising)
 				this.mc_.y -= speed_;
@@ -186,8 +193,15 @@ package vessels.ships
 		override public function destroyExplosion():void {
 			explosion_mc_.stop();
 			Misc.getStage().removeChild(explosion_mc_);
-			Misc.getStage().addChild(mc_);
+			if (GameManager.getInstance().lives_ > 0) {
+				Misc.getStage().addChild(mc_);
+			} else {
+				removeEventListeners();
+				Misc.getStage().removeChild(life_bar_);
+			}
 			exploding_ = false;
+			
+			
 		}
 		
 	}
