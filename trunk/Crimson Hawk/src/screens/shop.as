@@ -53,23 +53,48 @@ package screens
 			var by:int;
 			var row:int = 0;
 			var column:int = 0;
+			var images:Vector.<Sprite> = new Vector.<Sprite>;
+			images.push(new ammo());
+			images.push(new armor());
+			images.push(new speed());
+			images.push(new damage());
+			images.push(new shield());
+			
 			for (var i:uint = 0; i < 8; i++) {
 				index = buttons_.length;
 				bx = 150 + 300 * column;
 				by = 50 + (250 * row);
 				
-				buttons_[index] = new ShopButton(bx, by, new ammo());
+				if (index <= images.length-1) {
+					buttons_[index] = new ShopButton(bx, by, images[i]);
+				} else {
+					buttons_[index] = new ShopButton(bx, by);
+				}
 				
 				column++;
 				if (i == 3) {
 					row++;
 					column = 0;
 				}
+				
+				buttons_[index].addEventListener(MouseEvent.MOUSE_UP, processShopButtonClicked(index));
 			}
 			
 			//Create next level button
 			next_.graphics.copyFrom(Shapes.getRectangle(600, 500, 150, 80, 0x999999, 1.0).graphics);
 			addChild(next_);
+		}
+		
+		
+		private function processShopButtonClicked(index:int):Function {
+			return function (e:MouseEvent):void {
+				switch(index) {
+					case 0:
+						manager_.MAX_SHOTS++;
+						trace("You can fire " + manager_.MAX_SHOTS + " at once");
+						break;
+				}
+			}
 		}
 		
 		
@@ -115,7 +140,10 @@ package screens
 			
 			for (var i:uint = 0; i < 8; i++) {
 				Misc.getStage().removeChild(buttons_[i]);
-				Misc.getStage().removeChild(buttons_[i].img_);
+				
+				if (buttons_[i].img_ && buttons_[i].img_.stage)
+					Misc.getStage().removeChild(buttons_[i].img_);
+					
 				delete buttons_[i];
 				buttons_[i] = null;
 			}
