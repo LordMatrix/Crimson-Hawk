@@ -28,9 +28,9 @@ Pool methodologies
 
 
 
-
-- button to the next level
-
 // Create shop button class with text, price, image and effect
 // new Ship (unlocks new buttons, such as shield && new weapons)
 // num_shots, health, damage per shot
+// speed
+// shot types: missiles, lazer
+// special: your shots destroy enemy shots

@@ -3,7 +3,7 @@
 	<time id="1">
 		<enemies>
 			<type>1</type>
-			<amount>1</amount>
+			<amount>0</amount>
 		</enemies>
 	</time>
 </level>

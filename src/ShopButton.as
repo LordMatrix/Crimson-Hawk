@@ -17,23 +17,32 @@ package
 		public var img_:Sprite;
 		private var cost_:uint;
 		
+		
 		public function ShopButton(x:int, y:int, img:Sprite=null, txt:TextField=null) {
 			
 			super(normal, hover, clicked, normal);
+			
 			this.x = x;
 			this.y = y;
 			this.scaleX = 0.7;
 			this.scaleY = 0.7;
 			this.enabled = true;
-			
-			img_ = img;
-			img_.scaleX = 0.5;
-			img_.scaleY = 0.5;
-			img_.x = this.x + 40;
-			img_.y = this.y + 40;
-			
 			Misc.getStage().addChild(this);
-			Misc.getStage().addChild(this.img_);
+			
+			if (img) {
+				img_ = img;
+				img_.scaleX = 0.5;
+				img_.scaleY = 0.5;
+				img_.x = this.x + 40;
+				img_.y = this.y + 40;
+				
+				Misc.getStage().addChild(this.img_);
+			} else {
+				this.downState = locked;
+				this.upState = locked;
+				this.overState = locked;
+				this.hitTestState = locked;
+			}
 		}
 		
 	}

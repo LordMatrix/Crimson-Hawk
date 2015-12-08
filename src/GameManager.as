@@ -31,11 +31,12 @@ package
 		
 		/** Constants **/
 		private const MAX_ENEMIES:uint = 8;
-		public const MAX_SHOTS:uint = 4;
 		public const LIFEBAR_WIDTH:uint = 40;
 		
 		
 		// Vars **/
+		public var MAX_SHOTS:uint = 4;
+		
 		public static var instance_:GameManager;
 		
 		public var points_:uint;
@@ -168,16 +169,9 @@ package
 			fired_shots_ = new Vector.<Shot>();
 			spare_shots_ = new Vector.<Shot>();
 			
+				
+			createShots();
 			
-			for (var i:uint=0; i < MAX_SHOTS; i++) {
-				
-				var shot_shape:Shape = Shapes.getEllipse(0, 0, 25, 8, 0x990000, 0.6);
-				TweenMax.to(shot_shape, 0, { blurFilter: { blurX:10 }} );
-				
-				var shot:Shot = new Shot(shot_shape, 1, 30, 0);
-				spare_shots_.push(shot);
-				Misc.getStage().addChild(shot.shape_);
-			}
 			
 			var shipMC:MovieClip = new ship1();
 			
@@ -187,6 +181,20 @@ package
 			ship_ = new vessels.ships.Ship(3, shipMC);
 			
 			Misc.getStage().addChild(ship_.mc_);
+		}
+		
+		
+		private function createShots():void {
+			var existing_shots:uint = fired_shots_.length + spare_shots_.length;
+			for (var i:uint= existing_shots; i < MAX_SHOTS; i++) {
+				
+				var shot_shape:Shape = Shapes.getEllipse(0, 0, 25, 8, 0x990000, 0.6);
+				TweenMax.to(shot_shape, 0, { blurFilter: { blurX:10 }} );
+				
+				var shot:Shot = new Shot(shot_shape, 1, 30, 0);
+				spare_shots_.push(shot);
+				Misc.getStage().addChild(shot.shape_);
+			}
 		}
 		
 		
@@ -268,8 +276,10 @@ package
 		
 		
 		public function reset():void {
+			waves_finished = false;
 			timers = new Vector.<Timer>();
 			parseLevel();
+			createShots();
 		}
 		
 		
