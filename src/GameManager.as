@@ -161,7 +161,7 @@ package
 		
 		private function init():void {
 				
-			points_ = 0;
+			points_ = 1000;
 			lives_ = 3;
 			active_enemies_ = new Vector.<Enemy>();
 			idle_enemies_ = new Vector.<Enemy>();
@@ -184,9 +184,11 @@ package
 		}
 		
 		
-		private function createShots():void {
-			var existing_shots:uint = fired_shots_.length + spare_shots_.length;
-			for (var i:uint= existing_shots; i < MAX_SHOTS; i++) {
+		public function createShots():void {
+			
+			mergeShots();
+			
+			for (var i:uint= spare_shots_.length; i < MAX_SHOTS; i++) {
 				
 				var shot_shape:Shape = Shapes.getEllipse(0, 0, 25, 8, 0x990000, 0.6);
 				TweenMax.to(shot_shape, 0, { blurFilter: { blurX:10 }} );
@@ -194,6 +196,15 @@ package
 				var shot:Shot = new Shot(shot_shape, 1, 30, 0);
 				spare_shots_.push(shot);
 				Misc.getStage().addChild(shot.shape_);
+			}
+		}
+		
+		
+		public function mergeShots():void {
+			//dump fired_shots into spare_shots
+			for (var i:uint = 0; i < fired_shots_.length; i++) {
+				Misc.getStage().removeChild(fired_shots_[0].shape_);
+				spare_shots_.push(fired_shots_.shift());
 			}
 		}
 		

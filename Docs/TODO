@@ -34,3 +34,5 @@ Pool methodologies
 // speed
 // shot types: missiles, lazer
 // special: your shots destroy enemy shots
+
+//New ships have different type of shots or more shots at once (e.g. shoot 3 shots at once, with different Y coords)
