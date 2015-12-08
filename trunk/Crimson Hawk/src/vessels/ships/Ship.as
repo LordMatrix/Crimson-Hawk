@@ -22,6 +22,7 @@ package vessels.ships
 		
 		private var invulnerable:Boolean = false;
 		
+		public var speed_:int = 5;
 		
 		public function Ship(hp:Number, mc:MovieClip) {
 			this.hp_ = hp;
@@ -49,14 +50,14 @@ package vessels.ships
 		
 		private function loop(e:Event):void {
 			if (rising)
-				this.mc_.y -= 5;
+				this.mc_.y -= speed_;
 			else if (falling)
-				this.mc_.y += 5;
+				this.mc_.y += speed_;
 			
 			if (advancing)
-				this.mc_.x += 5;
+				this.mc_.x += speed_;
 			else if (retreating)
-				this.mc_.x -= 5;
+				this.mc_.x -= speed_;
 				
 			moveShots();
 			TweenLite.to(mc_, 0, {removeTint:true});
