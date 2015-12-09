@@ -31,11 +31,12 @@ package
 		
 		/** Constants **/
 		private const MAX_ENEMIES:uint = 8;
-		public const LIFEBAR_WIDTH:uint = 40;
+		
 		
 		
 		// Vars **/
 		public var MAX_SHOTS:uint;
+		public var LIFEBAR_WIDTH:uint = 40;
 		
 		public static var instance_:GameManager;
 		
@@ -169,13 +170,7 @@ package
 				
 			createShots();
 			
-			
-			var shipMC:MovieClip = new ship1();
-			
-			shipMC.x = 100;
-			shipMC.y = Misc.getStage().stageHeight / 2;
-			
-			ship_ = new vessels.ships.Ship(3, shipMC);
+			ship_ = new vessels.ships.Cargo();
 			
 			Misc.getStage().addChild(ship_.mc_);
 			
