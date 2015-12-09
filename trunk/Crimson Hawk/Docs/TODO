@@ -33,3 +33,10 @@ Pool methodologies
 // special: your shots destroy enemy shots
 
 //New ships have different type of shots or more shots at once (e.g. shoot 3 shots at once, with different Y coords)
+
+
+Fix lifebar lenght
+Make shields work
+
+
+//Every upgrade is marked with a dot. The 4th upgrade on every field requires a new ship

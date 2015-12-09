@@ -48,7 +48,7 @@ package vessels.ships
 		}
 
 		
-		private function removeEventListeners():void {
+		public function removeEventListeners():void {
 			Misc.getStage().removeEventListener(Event.ENTER_FRAME, loop);
 			Misc.getStage().removeEventListener(KeyboardEvent.KEY_DOWN, onKeyDown);
 			Misc.getStage().removeEventListener(KeyboardEvent.KEY_UP, onKeyUp);

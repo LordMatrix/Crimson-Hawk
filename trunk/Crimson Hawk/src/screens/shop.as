@@ -9,6 +9,7 @@ package screens
 	import flash.events.Event;
 	import flash.events.MouseEvent;
 	import flash.text.TextField;
+	import vessels.ships.Fighter;
 	/**
 	 * ...
 	 * @author Lord Matrix
@@ -22,7 +23,7 @@ package screens
 		private var buttons_:Vector.<ShopButton>;
 		private var next_:Sprite;
 		
-		public static var levels_:Vector.<int> = new <int>[1, 1, 1, 1, 1];
+		public static var levels_:Vector.<int> = new <int>[1, 1, 1, 1, 1, 1];
 		
 		public function shop() {
 			super();
@@ -57,11 +58,11 @@ package screens
 			var by:int;
 			var row:int = 0;
 			var column:int = 0;
-			var images:Vector.<Sprite> = new <Sprite>[new ammo(), new armor(), new speed(), new damage(), new shield()];
-			var names:Vector.<String> = new <String> ["Ammo", "Armor", "Speed", "Damage", "Shield"];
-			var values:Vector.<Number> = new <Number> [manager_.MAX_SHOTS, manager_.ship_.init_hp_, manager_.ship_.speed_, shot.damage_, 0];
-			var costs:Vector.<int> = new <int>[30, 30, 50, 70, 100];
-			var cost_increments:Vector.<Number> = new <Number>[1.5, 1.5, 1.5, 1.5, 1.5];
+			var images:Vector.<Sprite> = new <Sprite>[new ship2(), new ammo(), new armor(), new speed(), new damage(), new shield()];
+			var names:Vector.<String> = new <String> ["Fighter", "Ammo", "Armor", "Speed", "Damage", "Shield"];
+			var values:Vector.<Number> = new <Number> [1, manager_.MAX_SHOTS, manager_.ship_.init_hp_, manager_.ship_.speed_, shot.damage_, 0];
+			var costs:Vector.<int> = new <int>[200, 30, 30, 50, 70, 100];
+			var cost_increments:Vector.<Number> = new <Number>[2, 1.5, 1.5, 1.5, 1.5, 1.5];
 
 			for (var i:uint = 0; i < 8; i++) {
 				index = buttons_.length;
@@ -105,27 +106,32 @@ package screens
 					
 				switch(index) {
 					case 0:
+						manager_.ship_.removeEventListeners();
+						manager_.ship_ = new Fighter();
+						break;
+					case 1:
 						valid = true;
 						manager_.MAX_SHOTS++;
 						buttons_[index].value_ = manager_.MAX_SHOTS;
 						manager_.createShots();
 						trace("You can fire " + manager_.MAX_SHOTS + " at once");
 						break;
-					case 1:
+					case 2:
 						valid = true;
 						manager_.ship_.init_hp_++;
 						manager_.ship_.hp_ = manager_.ship_.init_hp_;
 						buttons_[index].value_ = manager_.ship_.init_hp_;
+						//manager_.LIFEBAR_WIDTH += 10;
 						trace("Ship's armor is now "+manager_.ship_.hp_)
 						break;
-					case 2:
+					case 3:
 						valid = true;
 						//speed
 						manager_.ship_.speed_ += 2;
 						buttons_[index].value_ = manager_.ship_.speed_;
 						trace("Ship's speed is now " + manager_.ship_.speed_);
 						break;
-					case 3:
+					case 4:
 						valid = true;
 						//damage
 						manager_.mergeShots();
@@ -137,10 +143,8 @@ package screens
 						buttons_[index].value_ =  manager_.spare_shots_[0].damage_;
 						trace("Shots damage is now " + manager_.spare_shots_[0].damage_);
 						break;
-					case 4:
-						//shield
-						break;
 					case 5:
+						//shield
 						break;
 					case 6:
 						break;
