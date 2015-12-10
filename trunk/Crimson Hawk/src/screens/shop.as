@@ -1,6 +1,7 @@
 package screens 
 {
 	import com.greensock.TweenLite;
+	import com.greensock.TweenMax;
 	import flash.display.Graphics;
 	import flash.display.MovieClip;
 	import flash.display.Shape;
@@ -23,7 +24,7 @@ package screens
 		private var buttons_:Vector.<ShopButton>;
 		private var next_:Sprite;
 		
-		public static var levels_:Vector.<int> = new <int>[1, 1, 1, 1, 1, 1];
+		public static var levels_:Vector.<int> = new <int>[1, 1, 1, 1, 1, 0];
 		
 		public function shop() {
 			super();
@@ -60,7 +61,7 @@ package screens
 			var column:int = 0;
 			var images:Vector.<Sprite> = new <Sprite>[new ship2(), new ammo(), new armor(), new speed(), new damage(), new shield()];
 			var names:Vector.<String> = new <String> ["Fighter", "Ammo", "Armor", "Speed", "Damage", "Shield"];
-			var values:Vector.<Number> = new <Number> [1, manager_.MAX_SHOTS, manager_.ship_.init_hp_, manager_.ship_.speed_, shot.damage_, 0];
+			var values:Vector.<Number> = new <Number> [1, manager_.MAX_SHOTS, manager_.ship_.init_hp_, manager_.ship_.speed_, shot.damage_, manager_.ship_.init_shield_];
 			var costs:Vector.<int> = new <int>[200, 30, 30, 50, 70, 100];
 			var cost_increments:Vector.<Number> = new <Number>[2, 1.5, 1.5, 1.5, 1.5, 1.5];
 
@@ -73,7 +74,7 @@ package screens
 				
 				if (index <= images.length - 1) {
 					cost = costs[i] * (Math.pow(cost_increments[i], levels_[i]-1))
-					buttons_[index] = new ShopButton(bx, by, images[i], names[i], values[i], cost, cost_increments[i]);
+					buttons_[index] = new ShopButton(bx, by, images[i], names[i], values[i], cost, cost_increments[i], levels_[i]);
 				} else {
 					buttons_[index] = new ShopButton(bx, by);
 				}
@@ -103,9 +104,16 @@ package screens
 				//Get out if the player hasn't got enough points
 				if (buttons_[index].cost_ > manager_.points_)
 					return;
+				//Get out if the current ship does not allow this upgrade
+				if (buttons_[index].level_ >= levels_[0] * 3) {
+					buttons_[index].drawLock();
+					return;
+				}
 					
 				switch(index) {
 					case 0:
+						valid = true;
+						//ship upgrade
 						manager_.ship_.removeEventListeners();
 						manager_.ship_ = new Fighter();
 						break;
@@ -144,7 +152,13 @@ package screens
 						trace("Shots damage is now " + manager_.spare_shots_[0].damage_);
 						break;
 					case 5:
+						valid = true;
 						//shield
+						manager_.ship_.shield_++;
+						manager_.ship_.init_shield_++;
+						buttons_[index].value_ = manager_.ship_.shield_;
+						trace("Ship's shield is now " + manager_.ship_.shield_);
+						manager_.ship_.updateShieldGlow();
 						break;
 					case 6:
 						break;
@@ -161,6 +175,9 @@ package screens
 					buttons_[index].line1_txt_.text = buttons_[index].name_ +"  " + buttons_[index].value_;
 					buttons_[index].cost_ *= buttons_[index].cost_increment_;
 					buttons_[index].line2_txt_.text = "$ " + buttons_[index].cost_;
+					buttons_[index].removeLevelDots();
+					buttons_[index].level_++;
+					buttons_[index].drawLevelDots();
 				}
 			}
 		}
@@ -188,6 +205,7 @@ package screens
 		private function nextScreen():void { 
 			killScreen();
 			Misc.getStage().addChild(manager_.ship_.mc_);
+			manager_.ship_.restore();
 			manager_.resetLevel();
 			Misc.getMain().loadScreen(2);
 		}
@@ -213,6 +231,8 @@ package screens
 					Misc.getStage().removeChild(buttons_[i].img_);
 					Misc.getStage().removeChild(buttons_[i].line1_txt_);
 					Misc.getStage().removeChild(buttons_[i].line2_txt_);
+					buttons_[i].removeLevelDots();
+					buttons_[i].removeLockSprite();
 				}
 					
 				delete buttons_[i];

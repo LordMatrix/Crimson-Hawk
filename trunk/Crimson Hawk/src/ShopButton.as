@@ -1,8 +1,10 @@
 package 
 {
+	import flash.display.Shape;
 	import flash.display.SimpleButton;
 	import flash.display.Sprite;
 	import flash.text.TextField;
+	import screens.shop;
 	/**
 	 * ...
 	 * @author Marcos Vazquez
@@ -19,12 +21,16 @@ package
 		public var value_:Number;
 		public var cost_:uint;
 		public var cost_increment_:Number;
+		public var level_:int;
 		
 		public var line1_txt_:TextField;
 		public var line2_txt_:TextField;
 		
+		private var dots_:Vector.<Shape>;
+		private var blocked_:Sprite;
 		
-		public function ShopButton(x:int, y:int, img:Sprite=null, name:String=null, value:Number=0, cost:int=0, increment:Number=0) {
+		
+		public function ShopButton(x:int, y:int, img:Sprite=null, name:String=null, value:Number=0, cost:int=0, increment:Number=0, level:int=1) {
 			
 			super(normal, hover, clicked, normal);
 			
@@ -57,12 +63,65 @@ package
 				Misc.getStage().addChild(line2_txt_);
 				//increment
 				this.cost_increment_ = increment;
+				//level
+				level_ = level;
+				//Draw upgrade level dots
+				dots_ = new Vector.<Shape>;
+				drawLevelDots();
+				
+				//Draw lock
+				blocked_ = new Sprite();
+				if (level_ >= shop.levels_[0]*3)
+					drawLock();
 			} else {
 				this.downState = locked;
 				this.upState = locked;
 				this.overState = locked;
 				this.hitTestState = locked;
 			}
+		}
+		
+		
+		public function drawLevelDots():void {
+			var color:uint = 0xFFFFFF;
+			
+			for (var i:uint = 0; i < level_; i++) {
+				
+				if (i==3)
+					color = 0x5555FF;
+				else if (i == 6)
+					color = 0x55FF55;
+				else if (i == 9)
+					color = 0xFF5555;
+				else if (i == 12)
+					color = 0x222222;
+					
+				var circle:Shape = Shapes.getCircle(this.x + 37 + 40 * (i%3), this.y + 180, 10, color, 1);
+				
+				
+				dots_.push(circle);
+			}
+		}
+		
+		public function removeLevelDots():void {
+			for (var i:uint=0; i < level_; i++) {
+				Misc.getStage().removeChild(dots_.shift());
+				
+			}
+		}
+		
+		
+		public function drawLock():void {
+			blocked_ = new lock();
+			blocked_.x = this.x + 40;
+			blocked_.y = this.y + 40;
+			Misc.getStage().addChild(blocked_);
+		}
+		
+		
+		public function removeLockSprite():void {
+			if (blocked_.stage)
+				Misc.getStage().removeChild(blocked_);
 		}
 		
 	}

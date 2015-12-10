@@ -11,10 +11,12 @@ package vessels.ships
 		public function Fighter() {
 			
 			var shipMC:MovieClip = new ship2();
+			var oldship:Ship = GameManager.getInstance().ship_;
 			
 			shipMC.x = 100;
 			shipMC.y = Misc.getStage().stageHeight / 2;
-			super(3, shipMC);
+			super(oldship.init_hp_, shipMC, oldship.speed_, oldship.init_shield_);
+			updateShieldGlow();
 		}
 		
 		

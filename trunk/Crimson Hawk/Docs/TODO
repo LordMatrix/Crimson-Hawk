@@ -1,10 +1,5 @@
 incrementar progresivamente la dificultad por niveles
 
-puntos compran mejoras
-
-Pantalla de game over aparte y clara
-
-
 ======================
 
 
@@ -22,7 +17,6 @@ Visual Effects (smoke, particles, fire...)
 Several states for ship/enemies
 Difficulty levels
 Detailed background animations
-Buying weapons & powerups between levels
 AI patterns
 Pool methodologies
 
@@ -33,10 +27,3 @@ Pool methodologies
 // special: your shots destroy enemy shots
 
 //New ships have different type of shots or more shots at once (e.g. shoot 3 shots at once, with different Y coords)
-
-
-Fix lifebar lenght
-Make shields work
-
-
-//Every upgrade is marked with a dot. The 4th upgrade on every field requires a new ship

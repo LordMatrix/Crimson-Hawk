@@ -274,24 +274,6 @@ package
 			}
 		}
 		
-		//This can get either an enemy or a ship (or anything with a life bar)
-		public function drawLifeBar(e:*):void {
-			e.life_bar_.width = (LIFEBAR_WIDTH * e.hp_ ) / e.init_hp_;
-					
-			var resultColor:uint; 
-			var g:uint = Math.round((0xFF / e.init_hp_) * e.hp_);
-			var r:uint = 0xFF - g;
-			var b:uint = 0xFF;
-
-			resultColor = r<<16 | g<<8 | b;
-			
-			var trans:ColorTransform = e.life_bar_.transform.colorTransform;
-			trans.color = resultColor;
-			
-			e.life_bar_.transform.colorTransform = trans;
-		}
-		
-		
 		
 		//Checks enemy collisions with allied shots && ship
 		public function checkCollisions():void {
