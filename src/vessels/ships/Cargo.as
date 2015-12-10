@@ -14,7 +14,10 @@ package vessels.ships
 			
 			shipMC.x = 100;
 			shipMC.y = Misc.getStage().stageHeight / 2;
-			super(3, shipMC);
+			
+			shipMC.graphics.curveTo(0, 200, 100, 300);
+			
+			super(3, shipMC, 5, 0);
 		}
 		
 	}

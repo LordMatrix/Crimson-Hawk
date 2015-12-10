@@ -62,7 +62,7 @@ package vessels.enemies {
 		
 		override public function damage(amount:uint):void {
 			hp_ -= amount;
-			GameManager.getInstance().drawLifeBar(this);
+			this.drawLifeBar();
 			if (hp_ <= 0 && !exploding_) {
 				explode();
 				//Add points to the player

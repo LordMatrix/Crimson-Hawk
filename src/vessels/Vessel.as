@@ -3,6 +3,7 @@ package vessels  {
 	import com.greensock.TweenMax;
 	import flash.display.MovieClip;
 	import flash.display.Shape;
+	import flash.geom.ColorTransform;
 	/**
 	 * ...
 	 * @author Marcos Vazquez
@@ -11,6 +12,11 @@ package vessels  {
 	{
 		public var init_hp_:Number;
 		public var hp_:Number;
+		
+		public var speed_:int = 5;
+		public var shield_:Number = 0;
+		public var init_shield_:Number = 0;
+		
 		public var mc_:MovieClip;
 		
 		public var exploding_:Boolean = false;
@@ -53,6 +59,27 @@ package vessels  {
 			Misc.getStage().removeChild(explosion_mc_);
 		}
 		
+		public function updateShieldGlow():void {
+			TweenMax.to(this.mc_, 1, { glowFilter: { color:0x3333ff, alpha:0.8, blurX:45, blurY:45, strength:shield_, quality:1 }} );
+		}
+		
+	
+		//This can get either an enemy or a ship (or anything with a life bar)
+		public function drawLifeBar():void {
+			this.life_bar_.width = (GameManager.getInstance().LIFEBAR_WIDTH * this.hp_ ) / this.init_hp_;
+					
+			var resultColor:uint; 
+			var g:uint = Math.round((0xFF / this.init_hp_) * this.hp_);
+			var r:uint = 0xFF - g;
+			var b:uint = 0xFF;
+
+			resultColor = r<<16 | g<<8 | b;
+			
+			var trans:ColorTransform = this.life_bar_.transform.colorTransform;
+			trans.color = resultColor;
+			
+			this.life_bar_.transform.colorTransform = trans;
+		}
 	}
 
 }

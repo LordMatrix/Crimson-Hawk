@@ -6,6 +6,7 @@ package vessels.ships
 	import flash.display.Shape;
 	import flash.events.Event;
 	import flash.events.KeyboardEvent;
+	import flash.geom.ColorTransform;
 	import flash.ui.Keyboard;
 	import vessels.Vessel;
 	
@@ -22,24 +23,52 @@ package vessels.ships
 		
 		private var invulnerable:Boolean = false;
 		
-		public var speed_:int = 5;
 		
-		public function Ship(hp:Number, mc:MovieClip) {
+		public function Ship(hp:Number, mc:MovieClip, speed:int, shield:Number) {
 			this.hp_ = hp;
 			this.init_hp_ = hp;
 			this.mc_ = mc;
+			this.speed_ = speed;
+			this.shield_ = shield;
+			this.init_shield_ = shield;
 			
 			init();
 			addEventListeners();
 		}
 		
 		private function init():void {
+			drawLifeBar();
+		}
+		
+		
+		override public function drawLifeBar():void {
+			
 			this.life_bar_ = Shapes.getRectangle(0, 0, 50, 30, 0x00cc00, 0.6);
 			life_bar_.x = 20;
 			life_bar_.y = 20;
 			TweenMax.to(this.life_bar_, 0, { blurFilter: { blurX:3 }} );
 			Misc.getStage().addChild(life_bar_);
+			
+			this.life_bar_.width = this.hp_ * 15;
+					
+			var resultColor:uint; 
+			var g:uint = Math.round((0xFF / this.init_hp_) * this.hp_);
+			var r:uint = 0xFF - g;
+			var b:uint = 0x00;
+
+			resultColor = r<<16 | g<<8 | b;
+			
+			var trans:ColorTransform = this.life_bar_.transform.colorTransform;
+			trans.color = resultColor;
+			
+			this.life_bar_.transform.colorTransform = trans;
 		}
+		
+		
+		public function removeLifeBar():void {
+			Misc.getStage().removeChild(life_bar_);
+		}
+		
 		
 		private function addEventListeners():void {
 			Misc.getStage().addEventListener(Event.ENTER_FRAME, loop);
@@ -67,7 +96,7 @@ package vessels.ships
 				this.mc_.x -= speed_;
 				
 			moveShots();
-			TweenLite.to(mc_, 0, {removeTint:true});
+			TweenLite.to(mc_, 0, { removeTint:true } );
 		}
 		
 		private function onKeyDown(e:KeyboardEvent):void {
@@ -173,19 +202,28 @@ package vessels.ships
 		
 		
 		override public function damage(amount:uint):void {
-			hp_ -= amount;
-			trace ("Ship HP is: " + hp_);
-			GameManager.getInstance().drawLifeBar(this);
 			
-			//turn ship red
-			TweenLite.to(mc_, 0, { tint:0xff0000 } );
+			if (shield_ >= amount) {
+				shield_ -= amount;
+				updateShieldGlow();
+				trace ("Ship SHIELD is: " + shield_);
+			} else {	
+				shield_ = 0;
+				updateShieldGlow();
+				hp_ -= (amount - shield_);
+				trace ("Ship HP is: " + hp_);
+				this.removeLifeBar();
+				this.drawLifeBar();
+				//turn ship red
+				TweenLite.to(mc_, 0, { tint:0xff0000 } );
 			
-			if (hp_ <= 0) {
-				explode();
-				hp_ = init_hp_;
-				GameManager.getInstance().lives_--;
-				mc_.x = 100;
-				mc_.y = Misc.getStage().stageHeight / 2;
+				if (hp_ <= 0) {
+					explode();
+					hp_ = init_hp_;
+					GameManager.getInstance().lives_--;
+					mc_.x = 100;
+					mc_.y = Misc.getStage().stageHeight / 2;
+				}
 			}
 		}
 		
@@ -200,10 +238,17 @@ package vessels.ships
 				Misc.getStage().removeChild(life_bar_);
 			}
 			exploding_ = false;
-			
-			
 		}
 		
+		
+		public function restore():void {
+			hp_ = init_hp_;
+			shield_ = init_shield_;
+			updateShieldGlow();
+			this.removeLifeBar();
+			this.drawLifeBar();
+		}
+
 	}
 
 }
