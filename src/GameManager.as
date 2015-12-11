@@ -55,6 +55,7 @@ package
 
 		public var waves_finished:Boolean;
 		
+		public var current_level_:uint = 1;
 		
 		public static function getInstance():GameManager {
 			if (!instance_) {
@@ -73,8 +74,8 @@ package
 		
 		
 		
-		private function parseLevel():void {
-			myLoader.load(new URLRequest("../Docs/lvl2.xml"));
+		private function parseLevel(level:uint):void {
+			myLoader.load(new URLRequest("../Docs/lvl"+((level-1)%4 + 1)+".xml"));
 			myLoader.addEventListener(Event.COMPLETE, processXML);
 		}
 		
@@ -158,7 +159,7 @@ package
 		public function init():void {
 			
 			points_ = 1000;
-			lives_ = 1;
+			lives_ = 10;
 			MAX_SHOTS = 4;
 			waves_finished = false;
 			active_enemies_ = new Vector.<Enemy>();
@@ -174,13 +175,13 @@ package
 			
 			Misc.getStage().addChild(ship_.mc_);
 			
-			parseLevel();
+			parseLevel(current_level_);
 		}
 		
 		public function resetLevel():void {
 			waves_finished = false;
 			timers = new Vector.<Timer>();
-			parseLevel();
+			parseLevel(current_level_);
 			createShots();
 		}
 		
@@ -244,6 +245,7 @@ package
 					
 					//Check ship collisions
 					if (!ship_.exploding_ && s.shape_.hitTestObject(ship_.mc_)) {
+						trace("SHIP HIT BY SHOT");
 						ship_.damage(1);
 						Misc.getStage().removeChild(s.shape_);
 						enemy_shots_.splice(i, 1);
@@ -284,6 +286,7 @@ package
 					ship_.checkShotCollisions(active_enemies_[i]);
 					//Check enemy-ship collisions
 					if (!ship_.exploding_ && active_enemies_[i].mc_.hitTestObject(ship_.mc_)) {
+						trace("SHIP HIT BY ENEMY");
 						ship_.damage(2);
 						active_enemies_[i].damage(2);
 					}

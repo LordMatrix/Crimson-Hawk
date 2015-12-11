@@ -32,6 +32,7 @@ package vessels.ships
 				s.shape_.x = this.mc_.x + this.mc_.width/3;
 				s.shape_.y = this.mc_.y + this.mc_.height/3;
 				GameManager.getInstance().fired_shots_.push(s);
+				SoundManager.getInstance().playSFX(0);
 			}
 		}
 		

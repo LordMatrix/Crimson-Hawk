@@ -32,6 +32,8 @@ package vessels.ships
 			this.shield_ = shield;
 			this.init_shield_ = shield;
 			
+			
+			
 			init();
 			addEventListeners();
 		}
@@ -85,6 +87,9 @@ package vessels.ships
 		
 		
 		private function loop(e:Event):void {
+			trace(mc_.height);
+			trace(mc_.width);
+			
 			if (rising)
 				this.mc_.y -= speed_;
 			else if (falling)
@@ -151,6 +156,7 @@ package vessels.ships
 			s.shape_.y = this.mc_.y;
 			
 			GameManager.getInstance().fired_shots_.push(s);
+			SoundManager.getInstance().playSFX(0);
 		}
 		
 		
