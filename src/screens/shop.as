@@ -10,7 +10,9 @@ package screens
 	import flash.events.Event;
 	import flash.events.MouseEvent;
 	import flash.text.TextField;
+	import vessels.ships.Destructor;
 	import vessels.ships.Fighter;
+	import vessels.ships.Fortress;
 	/**
 	 * ...
 	 * @author Lord Matrix
@@ -18,13 +20,43 @@ package screens
 	public class shop extends MovieClip {
 		
 		private var backgr_:MovieClip;
-		private var manager_:GameManager;
 		private var points_txt_:TextField;
 		private var lives_txt_:TextField;
 		private var buttons_:Vector.<ShopButton>;
 		private var next_:Sprite;
+		private var manager_:GameManager = GameManager.getInstance();
 		
 		public static var levels_:Vector.<int> = new <int>[1, 1, 1, 1, 1, 0];
+		
+		private var shot:Shot = (manager_.spare_shots_.length > 0) ? manager_.spare_shots_[0] : manager_.fired_shots_[0];
+		
+		private var images:Vector.<Sprite> = new <Sprite>[new ship2(), new ammo(), new armor(), new speed(), new damage(), new oneup()];
+		private var names:Vector.<String> = new <String> ["Fighter", "Ammo", "Armor", "Speed", "Damage", "1UP"];
+		private var values:Vector.<Number> = new <Number> [1, manager_.MAX_SHOTS, manager_.ship_.init_hp_, manager_.ship_.speed_, shot.damage_, manager_.lives_];
+		private var costs:Vector.<int> = new <int>[200, 30, 30, 50, 70, 300];
+		private var cost_increments:Vector.<Number> = new <Number>[3, 1.5, 1.5, 1.5, 1.5, 1];
+		
+		private var images2:Vector.<Sprite> = new <Sprite>[new shield(), new shield_recharge()];
+		private var names2:Vector.<String> = new <String> ["Shield", "Recharge"];
+		private var values2:Vector.<Number> = new <Number> [manager_.ship_.init_shield_, manager_.ship_.shield_recharge_];
+		private var costs2:Vector.<int> = new <int>[100, 80];
+		private var cost_increments2:Vector.<Number> = new <Number>[1.5, 1.3];
+		private var levels2:Vector.<int> = new <int>[0, 0];
+		
+		private var images3:Vector.<Sprite> = new <Sprite>[new missiles(), new missile_damage()];
+		private var names3:Vector.<String> = new <String> ["Ammo", "Damage"];
+		private var values3:Vector.<Number> = new <Number> [manager_.num_missiles_, manager_.missiles_damage_];
+		private var costs3:Vector.<int> = new <int>[120, 130];
+		private var cost_increments3:Vector.<Number> = new <Number>[1.5, 1.6];
+		private var levels3:Vector.<int> = new <int>[1, 7];
+		
+		private var images4:Vector.<Sprite> = new <Sprite>[new lazers(), new lazer_damage()];
+		private var names4:Vector.<String> = new <String> ["Ammo", "Damage"];
+		private var values4:Vector.<Number> = new <Number> [manager_.num_lazers_, manager_.lazers_damage_];
+		private var costs4:Vector.<int> = new <int>[140, 150];
+		private var cost_increments4:Vector.<Number> = new <Number>[1.5, 1.6];
+		private var levels4:Vector.<int> = new <int>[1, 5];
+		
 		
 		public function shop() {
 			super();
@@ -46,12 +78,53 @@ package screens
 			lives_txt_ = Misc.getTextField("Lives: " + String(manager_.lives_), 0, 20, 20, 0x990000);
 		}
 		
-		private function addObjects():void { 
-			addChild(backgr_);
-			addChild(points_txt_);
-			addChild(lives_txt_);
+		
+		
+		private function addShopButton(bx:uint, by:uint, i:uint, index:uint):void {
 			
-			var shot:Shot = (manager_.spare_shots_.length > 0) ? manager_.spare_shots_[0] : manager_.fired_shots_[0];
+			var cost:int
+			
+			if (index <= images.length - 1) {
+					cost = costs[i] * (Math.pow(cost_increments[i], levels_[i]-1))
+					buttons_[index] = new ShopButton(bx, by, images[i], names[i], values[i], cost, cost_increments[i], levels_[i]);
+				} else {
+					buttons_[index] = new ShopButton(bx, by);
+				}
+		}
+		
+		private function appendAvailableUpdates(level:uint, exact:Boolean = true):void {
+			
+			if ((!exact && level >= 2) || (exact && level==2)) {
+				images = images.concat(images2);
+				names = names.concat(names2);
+				values = values.concat(values2);
+				costs = costs.concat(costs2);
+				cost_increments = cost_increments.concat(cost_increments2);
+				levels_ = levels_.concat(levels2);
+				if (exact) return;
+			}
+			if ((!exact && level >= 3) || (exact && level==3)) {
+				images = images.concat(images3);
+				names = names.concat(names3);
+				values = values.concat(values3);
+				costs = costs.concat(costs3);
+				cost_increments = cost_increments.concat(cost_increments3);
+				levels_ = levels_.concat(levels3);
+				if (exact) return;
+			}
+			if ((!exact && level >= 4) || (exact && level==4)) {
+				images = images.concat(images4);
+				names = names.concat(names4);
+				values = values.concat(values4);
+				costs = costs.concat(costs4);
+				cost_increments = cost_increments.concat(cost_increments4);
+				levels_ = levels_.concat(levels4);
+				if (exact) return;
+			}
+		}
+		
+		
+		private function addShopButtons():void {
 			
 			//Create shopping buttons
 			var index:int;
@@ -59,40 +132,51 @@ package screens
 			var by:int;
 			var row:int = 0;
 			var column:int = 0;
-			var images:Vector.<Sprite> = new <Sprite>[new ship2(), new ammo(), new armor(), new speed(), new damage(), new shield()];
-			var names:Vector.<String> = new <String> ["Fighter", "Ammo", "Armor", "Speed", "Damage", "Shield"];
-			var values:Vector.<Number> = new <Number> [1, manager_.MAX_SHOTS, manager_.ship_.init_hp_, manager_.ship_.speed_, shot.damage_, manager_.ship_.init_shield_];
-			var costs:Vector.<int> = new <int>[200, 30, 30, 50, 70, 100];
-			var cost_increments:Vector.<Number> = new <Number>[2, 1.5, 1.5, 1.5, 1.5, 1.5];
+			
+			
+			//Unlock buttons if ship upgrades have been bought
+			appendAvailableUpdates(levels_[0], false);
 
-			for (var i:uint = 0; i < 8; i++) {
+			for (var i:uint = 0; i < 12; i++) {
 				index = buttons_.length;
-				bx = 150 + 300 * column;
+				bx = 150 + 250 * column;
 				by = 50 + (250 * row);
 				
-				var cost:int
-				
-				if (index <= images.length - 1) {
-					cost = costs[i] * (Math.pow(cost_increments[i], levels_[i]-1))
-					buttons_[index] = new ShopButton(bx, by, images[i], names[i], values[i], cost, cost_increments[i], levels_[i]);
-				} else {
-					buttons_[index] = new ShopButton(bx, by);
-				}
+				addShopButton(bx, by, i, index);
 				
 				column++;
-				if (i == 3) {
+				if (i == 5) {
 					row++;
 					column = 0;
 				}
 				
 				buttons_[index].addEventListener(MouseEvent.MOUSE_UP, processShopButtonClicked(index));
 			}
+		}
+		
+		
+		private function addObjects():void { 
+			addChild(backgr_);
+			addChild(points_txt_);
+			addChild(lives_txt_);
+			
+			addShopButtons();
+			
 			
 			//Create next level button
-			var square:Graphics = Shapes.getRectangle(600, 500, 150, 80, 0x999999, 1.0).graphics;
+			var square:Graphics = Shapes.getRectangle(600, 500, 150, 100, 0x999999, 1.0).graphics;
 			next_.graphics.copyFrom(square);
 			square.clear();
 			Misc.getStage().addChild(next_);
+		}
+		
+		
+		private function unlockButton(index:uint):void {
+			var oldbtn:ShopButton = buttons_[index];
+			var newbtn:ShopButton = new ShopButton(oldbtn.x, oldbtn.y, images[index], names[index], values[index], costs[index], cost_increments[index], levels_[index]);
+			oldbtn.remove();
+			buttons_[index] = newbtn;
+			buttons_[index].addEventListener(MouseEvent.MOUSE_UP, processShopButtonClicked(index));
 		}
 		
 		
@@ -116,11 +200,53 @@ package screens
 						valid = true;
 						//ship upgrade
 						manager_.ship_.removeEventListeners();
-						manager_.ship_ = new Fighter();
+						var timg:Sprite;
+						
+						switch(levels_[0]) {
+							case 1:
+								manager_.ship_ = new Fighter();
+								timg = new ship3();
+								appendAvailableUpdates(2);
+								unlockButton(6);
+								unlockButton(7);
+								break;
+							case 2:
+								manager_.ship_ = new Destructor();
+								timg = new ship4();
+								appendAvailableUpdates(3);
+								unlockButton(8);
+								unlockButton(9);
+								break;
+							case 3:
+								manager_.ship_ = new Fortress();
+								timg = new ship4();
+								appendAvailableUpdates(4);
+								unlockButton(10);
+								unlockButton(11);
+								break;
+							default:
+								trace("Invalid ship. Exiting method.")
+								manager_.ship_.addEventListeners();
+								return;
+								
+						}
+						
 						//remove locks
 						for (i=0; i < buttons_.length; i++) {
 							buttons_[i].removeLockSprite();
 						}
+						
+						//Set next ship upgrade sprite and name
+						Misc.getStage().removeChild(buttons_[index].img_);
+						timg.scaleX = 0.3;
+						timg.scaleY = 0.3;
+						timg.x = buttons_[index].x + 50;
+						timg.y = buttons_[index].y + 60;
+						buttons_[index].img_ = timg;
+						Misc.getStage().addChild(buttons_[index].img_);
+						//Resize ingame ship
+						manager_.ship_.mc_.scaleX = 0.5;
+						manager_.ship_.mc_.scaleY = 0.5;
 						break;
 					case 1:
 						valid = true;
@@ -158,6 +284,11 @@ package screens
 						break;
 					case 5:
 						valid = true;
+						manager_.lives_++;
+						buttons_[index].value_ = manager_.lives_;
+						break;
+					case 6:
+						valid = true;
 						//shield
 						manager_.ship_.shield_++;
 						manager_.ship_.init_shield_++;
@@ -165,9 +296,43 @@ package screens
 						trace("Ship's shield is now " + manager_.ship_.shield_);
 						manager_.ship_.updateShieldGlow();
 						break;
-					case 6:
-						break;
 					case 7:
+						valid = true;
+						//Shield recharge
+						manager_.ship_.shield_recharge_++;
+						buttons_[index].value_ = manager_.ship_.shield_recharge_;
+						trace("Ship's recharge rate is now " + manager_.ship_.shield_recharge_);
+						break;
+					case 8:
+						valid = true;
+						//Missile ammo
+						manager_.num_missiles_++;
+						buttons_[index].value_ = manager_.num_missiles_;
+						trace("Ship's MISSILE ammo is now " + manager_.num_missiles_);
+						break;
+					case 9:
+						valid = true;
+						//Missile damage
+						manager_.missiles_damage_ += 2;
+						buttons_[index].value_ = manager_.missiles_damage_;
+						trace("MISSILE DAMAGE is now " + manager_.missiles_damage_);
+						break;
+					case 10:
+						valid = true;
+						//Lazer ammo
+						manager_.num_lazers_++;
+						buttons_[index].value_ = manager_.num_lazers_;
+						trace("Ship's LAZER ammo is now " + manager_.num_lazers_);
+						break;
+					case 11:
+						valid = true;
+						//Lazer damage
+						manager_.lazers_damage_ += 2;
+						buttons_[index].value_ = manager_.lazers_damage_;
+						trace("LAZER DAMAGE is now " + manager_.lazers_damage_);
+						break;
+					default:
+						trace("Unknown shop option");
 						break;
 				}
 				
@@ -183,6 +348,7 @@ package screens
 					buttons_[index].removeLevelDots();
 					buttons_[index].level_++;
 					buttons_[index].drawLevelDots();
+					SoundManager.getInstance().playSFX(3);
 				}
 			}
 		}
@@ -195,7 +361,6 @@ package screens
 		
 		
 		private function onMouseDownNext(e:MouseEvent):void {
-			trace("ROLLING");
 			nextScreen();
 		}
 		
@@ -229,7 +394,7 @@ package screens
 			removeChild(backgr_);
 			backgr_ = null;
 			
-			for (var i:uint = 0; i < 8; i++) {
+			for (var i:uint = 0; i < 12; i++) {
 				Misc.getStage().removeChild(buttons_[i]);
 				
 				if (buttons_[i].img_ && buttons_[i].img_.stage) {

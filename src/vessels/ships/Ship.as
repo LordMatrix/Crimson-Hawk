@@ -72,7 +72,7 @@ package vessels.ships
 		}
 		
 		
-		private function addEventListeners():void {
+		public function addEventListeners():void {
 			Misc.getStage().addEventListener(Event.ENTER_FRAME, loop);
 			Misc.getStage().addEventListener(KeyboardEvent.KEY_DOWN, onKeyDown);
 			Misc.getStage().addEventListener(KeyboardEvent.KEY_UP, onKeyUp);
@@ -87,8 +87,6 @@ package vessels.ships
 		
 		
 		private function loop(e:Event):void {
-			trace(mc_.height);
-			trace(mc_.width);
 			
 			if (rising)
 				this.mc_.y -= speed_;

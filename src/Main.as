@@ -51,7 +51,7 @@ package
 					break;
 				case 2:
 					var level:uint = GameManager.getInstance().current_level_;
-					SoundManager.getInstance().playMusic((level-1) % 4 + 1);
+					SoundManager.getInstance().playMusic((level - 1) % 4 + 1);
 					GameManager.getInstance().current_level_++;
 					gameScreen = new game();
 					addChild(gameScreen);

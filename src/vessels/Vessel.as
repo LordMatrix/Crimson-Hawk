@@ -16,6 +16,7 @@ package vessels  {
 		public var speed_:int = 5;
 		public var shield_:Number = 0;
 		public var init_shield_:Number = 0;
+		public var shield_recharge_:Number = 0;
 		
 		public var mc_:MovieClip;
 		
