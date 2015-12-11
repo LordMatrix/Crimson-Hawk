@@ -45,18 +45,24 @@ package
 		public function loadScreen(num:uint):void {
 			switch(num) {
 				case 1:
+					SoundManager.getInstance().playMusic(0);
 					welcomeScreen = new welcome();
 					addChild(welcomeScreen);
 					break;
 				case 2:
+					var level:uint = GameManager.getInstance().current_level_;
+					SoundManager.getInstance().playMusic((level-1) % 4 + 1);
+					GameManager.getInstance().current_level_++;
 					gameScreen = new game();
 					addChild(gameScreen);
 					break;
 				case 3:
+					SoundManager.getInstance().playMusic(0);
 					shopScreen = new shop();
 					addChild(shopScreen);
 					break;
 				case 4:
+					SoundManager.getInstance().playMusicOnce(5);
 					gameOverScreen = new gameover();
 					addChild(gameOverScreen);
 					break;

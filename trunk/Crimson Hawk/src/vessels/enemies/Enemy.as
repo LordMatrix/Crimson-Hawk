@@ -42,6 +42,7 @@ package vessels.enemies {
 			var s:Shot = new Shot(shot_shape, 1, -15, 0, 1);
 			GameManager.getInstance().enemy_shots_.push(s);
 			Misc.getStage().addChild(s.shape_);
+			//SoundManager.getInstance().playSFX(0);
 		}
 		
 		override public function move():Boolean {
@@ -63,6 +64,8 @@ package vessels.enemies {
 		override public function damage(amount:uint):void {
 			hp_ -= amount;
 			this.drawLifeBar();
+			SoundManager.getInstance().playSFX(1);
+			
 			if (hp_ <= 0 && !exploding_) {
 				explode();
 				//Add points to the player

@@ -27,3 +27,5 @@ Pool methodologies
 // special: your shots destroy enemy shots
 
 //New ships have different type of shots or more shots at once (e.g. shoot 3 shots at once, with different Y coords)
+
+A sound control to mute all music and sfx

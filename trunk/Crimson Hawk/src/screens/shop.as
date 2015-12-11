@@ -100,6 +100,7 @@ package screens
 			return function (e:MouseEvent):void {
 				
 				var valid:Boolean = false;
+				var i:uint;
 				
 				//Get out if the player hasn't got enough points
 				if (buttons_[index].cost_ > manager_.points_)
@@ -116,6 +117,10 @@ package screens
 						//ship upgrade
 						manager_.ship_.removeEventListeners();
 						manager_.ship_ = new Fighter();
+						//remove locks
+						for (i=0; i < buttons_.length; i++) {
+							buttons_[i].removeLockSprite();
+						}
 						break;
 					case 1:
 						valid = true;
@@ -144,7 +149,7 @@ package screens
 						//damage
 						manager_.mergeShots();
 						
-						for (var i:uint= 0; i < manager_.MAX_SHOTS; i++) {
+						for (i=0; i < manager_.MAX_SHOTS; i++) {
 							manager_.spare_shots_[i].damage_ += 0.5;
 						}
 						

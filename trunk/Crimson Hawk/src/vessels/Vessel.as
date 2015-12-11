@@ -52,6 +52,7 @@ package vessels  {
 			var explosion_mc:MovieClip = explosion_mc_;
 			explosion_mc.addFrameScript(explosion_mc.totalFrames - 1, destroyExplosion);
 			explosion_mc_.play();
+			SoundManager.getInstance().playSFX(2);
 		}
 		
 		public function destroyExplosion():void {

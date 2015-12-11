@@ -39,6 +39,7 @@ package
 			this.scaleX = 0.7;
 			this.scaleY = 0.7;
 			this.enabled = true;
+			blocked_ = new Sprite();
 			Misc.getStage().addChild(this);
 			
 			if (img && name && cost) {
@@ -70,7 +71,6 @@ package
 				drawLevelDots();
 				
 				//Draw lock
-				blocked_ = new Sprite();
 				if (level_ >= shop.levels_[0]*3)
 					drawLock();
 			} else {
@@ -112,10 +112,12 @@ package
 		
 		
 		public function drawLock():void {
-			blocked_ = new lock();
-			blocked_.x = this.x + 40;
-			blocked_.y = this.y + 40;
-			Misc.getStage().addChild(blocked_);
+			if (!blocked_.stage) {
+				blocked_ = new lock();
+				blocked_.x = this.x + 40;
+				blocked_.y = this.y + 40;
+				Misc.getStage().addChild(blocked_);
+			}
 		}
 		
 		
