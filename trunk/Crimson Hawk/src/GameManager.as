@@ -2,6 +2,7 @@ package
 {
 	import com.greensock.TweenLite;
 	import com.greensock.TweenMax;
+	import flash.display.Sprite;
 	import vessels.enemies.Enemy;
 	import vessels.enemies.HeadBoss;
 	import vessels.enemies.Saucer1;
@@ -57,6 +58,13 @@ package
 		
 		public var current_level_:uint = 1;
 		
+		public var num_missiles_:uint = 0;
+		public var missiles_damage_:uint = 5;
+		
+		public var num_lazers_:uint = 0;
+		public var lazers_damage_:uint = 5;
+		
+		
 		public static function getInstance():GameManager {
 			if (!instance_) {
 				instance_ = new GameManager();
@@ -81,14 +89,12 @@ package
 		
 		private function processXML(e:Event):void {
 			level = new XML(e.target.data);
-			//trace(level);
 			
 			var i:uint = 0;
 			var last_time:uint = 0;
 			
 			for each (var wave:XML in level.time) {
 				
-				//trace(wave.@id);
 				last_time = wave.@id;
 				timers[i] = new Timer(wave.@id * 1000);
 				
@@ -158,7 +164,7 @@ package
 		
 		public function init():void {
 			
-			points_ = 1000;
+			points_ = 10000;
 			lives_ = 10;
 			MAX_SHOTS = 4;
 			waves_finished = false;

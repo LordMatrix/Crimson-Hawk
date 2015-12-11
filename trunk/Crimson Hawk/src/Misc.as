@@ -17,6 +17,7 @@ package
 		private static var _stageHeight:uint;
 		private static var _stageWidth:uint;
 		
+		
 		public static function setMain(main:*) :void {
 			_main = main;
 			_stage = main.stage;

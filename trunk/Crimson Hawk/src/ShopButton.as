@@ -126,6 +126,12 @@ package
 				Misc.getStage().removeChild(blocked_);
 		}
 		
+		
+		public function remove():void {
+			removeLockSprite();
+			if (this.stage)
+				Misc.getStage().removeChild(this);
+		}
 	}
 
 }
