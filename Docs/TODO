@@ -22,31 +22,9 @@ Pool methodologies
 
 
 
-// new Ship (unlocks new buttons, such as shield && new weapons)
-// shot types: missiles, lazer
-// special: your shots destroy enemy shots
-
-Ship 3 shoots 4 at once and/or missiles every time the shots pool depletes thar follows the leftest enemy in arc
-Ship4 shoots an instant lazer beam directly at the closest enemy
-
-//SHOPPING IDEAS
-1
-Extra life
-2
-Shield
-Shield regeneration
-3
-Num missiles
-Missile damage
-4
-Num Lazer
-Lazer damage
 
 
 
-Unlockable shopping after ship upgrade
-Restore shield after dying
-Prevent ship from shooting in shop
 Temporary invulnerability after dying
 Try game restarting, stats and such
 increasing difficulty
@@ -55,11 +33,5 @@ Refactoring
 Commenting
 
 
-
-
-missile sprite
-(lazer is done through cool programming)
-ship 3 sprite
-ship 4 sprite
 
 MOAR ENEMIES OR AT LEAST BOSSES

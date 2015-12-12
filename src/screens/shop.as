@@ -134,6 +134,16 @@ package screens
 			var column:int = 0;
 			
 			
+			//Change the 1st button image and name if ship has been upgraded
+			if (levels_[0] == 2) {
+				images[0] = new ship3();
+				names[0] = "Destructor";
+			} else if (levels_[0] >= 3) {
+				images[0] = new ship4();
+				names[0] = "Fortress";
+			}
+			
+			
 			//Unlock buttons if ship upgrades have been bought
 			appendAvailableUpdates(levels_[0], false);
 
