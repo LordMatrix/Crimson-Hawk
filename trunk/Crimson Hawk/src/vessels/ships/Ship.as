@@ -8,6 +8,7 @@ package vessels.ships
 	import flash.events.KeyboardEvent;
 	import flash.geom.ColorTransform;
 	import flash.ui.Keyboard;
+	import vessels.enemies.Enemy;
 	import vessels.Vessel;
 	
 	/**
@@ -23,6 +24,8 @@ package vessels.ships
 		
 		private var invulnerable:Boolean = false;
 		
+		private var manager_:GameManager;
+		
 		
 		public function Ship(hp:Number, mc:MovieClip, speed:int, shield:Number) {
 			this.hp_ = hp;
@@ -32,7 +35,7 @@ package vessels.ships
 			this.shield_ = shield;
 			this.init_shield_ = shield;
 			
-			
+			manager_ = GameManager.getInstance();
 			
 			init();
 			addEventListeners();
@@ -83,6 +86,12 @@ package vessels.ships
 			Misc.getStage().removeEventListener(Event.ENTER_FRAME, loop);
 			Misc.getStage().removeEventListener(KeyboardEvent.KEY_DOWN, onKeyDown);
 			Misc.getStage().removeEventListener(KeyboardEvent.KEY_UP, onKeyUp);
+			
+			//set all movement flags to false when deleting event listeners
+			rising = false;
+			falling = false;
+			advancing = false;
+			retreating = false;
 		}
 		
 		
@@ -99,6 +108,8 @@ package vessels.ships
 				this.mc_.x -= speed_;
 				
 			moveShots();
+			moveMissiles();
+			DissipateLazers();
 			TweenLite.to(mc_, 0, { removeTint:true } );
 		}
 		
@@ -117,7 +128,7 @@ package vessels.ships
 					retreating = true;
 					break;
 				case Keyboard.SPACE:
-					if (!exploding_ && GameManager.getInstance().fired_shots_.length < GameManager.getInstance().MAX_SHOTS) {
+					if (!exploding_ && manager_.fired_shots_.length < manager_.MAX_SHOTS) {
 						Shoot();
 					}
 					break;
@@ -148,12 +159,12 @@ package vessels.ships
 		}
 		
 		override public function Shoot():void {
-			var s:Shot = GameManager.getInstance().spare_shots_.pop();
+			var s:Shot = manager_.spare_shots_.pop();
 						
 			s.shape_.x = this.mc_.x + this.mc_.width/3;
 			s.shape_.y = this.mc_.y;
 			
-			GameManager.getInstance().fired_shots_.push(s);
+			manager_.fired_shots_.push(s);
 			SoundManager.getInstance().playSFX(0);
 		}
 		
@@ -162,17 +173,75 @@ package vessels.ships
 			
 			var i:uint = 0;
 			
-			for each (var s:Shot in GameManager.getInstance().fired_shots_) {
+			for each (var s:Shot in manager_.fired_shots_) {
 				
 				//Move them
 				if (s.shape_.x < Misc.getStage().stageWidth) {
 					s.shape_.x += s.speedX_;
 				} else  {
-					GameManager.getInstance().spare_shots_.push(s);
-					GameManager.getInstance().fired_shots_.splice(i, 1);
+					manager_.spare_shots_.push(s);
+					manager_.fired_shots_.splice(i, 1);
 				}
 				
 				i++;
+			}
+			
+		}
+		
+		
+		private function moveMissiles():void {
+			
+			var i:uint = 0;
+			var max_speed:int = 15;
+			var min_speed:int = -15;
+			
+			
+			for each (var s:Shot in manager_.missiles_) {
+				
+				
+				//Get the coordinates of the missile target
+				if (manager_.active_enemies_.length > 0) {
+					var fx:int = s.target_.mc_.x;
+					var fy:int = s.target_.mc_.y;
+					
+					//Correct trajectory by altering x&y speeds
+					if (fx > s.shape_.x && manager_.missiles_[i].speedX_ < max_speed)
+						manager_.missiles_[i].speedX_++;
+					else if (fx < s.shape_.x && manager_.missiles_[i].speedX_ > min_speed)
+						manager_.missiles_[i].speedX_--;
+						
+					if (fy > s.shape_.y && manager_.missiles_[i].speedY_ < max_speed )
+						manager_.missiles_[i].speedY_++;
+					else if (fy < s.shape_.y && manager_.missiles_[i].speedY_ > min_speed)
+						manager_.missiles_[i].speedY_--;
+				}
+				
+				
+				//Move them
+				if (s.shape_.x < Misc.getStage().stageWidth && s.shape_.y < Misc.getStage().stageHeight) {
+					s.shape_.x += s.speedX_;
+					s.shape_.y += s.speedY_;
+				} else  {
+					Misc.getStage().removeChild(manager_.missiles_[i].shape_);
+					manager_.missiles_.splice(i, 1);
+				}
+				
+				i++;
+			}
+			
+		}
+		
+		
+		private function DissipateLazers():void {
+			
+			for (var i:uint = 0; i < manager_.lazers_.length; i++) {
+				manager_.lazers_[i].blur_ += 0.5;
+				TweenMax.to(manager_.lazers_[i].shape_, 0, { blurFilter: { blurY: manager_.lazers_[i].blur_ }} );
+				
+				if (manager_.lazers_[i].blur_ > 20) {
+					Misc.getStage().removeChild(manager_.lazers_[i].shape_);
+					manager_.lazers_.splice(i, 1);
+				}
 			}
 			
 		}
@@ -184,12 +253,12 @@ package vessels.ships
 			var i:uint = 0;
 			var collided:Boolean = false;
 			
-			for each (var shot:Shot in GameManager.getInstance().fired_shots_) {
+			for each (var shot:Shot in manager_.fired_shots_) {
 				if (shot.shape_.hitTestObject(item.mc_)) {
 					collided = true;
 					
-					GameManager.getInstance().spare_shots_.push(shot);
-					GameManager.getInstance().fired_shots_.splice(i, 1);
+					manager_.spare_shots_.push(shot);
+					manager_.fired_shots_.splice(i, 1);
 					
 					//Place them away
 					shot.shape_.x = -10;
@@ -200,6 +269,36 @@ package vessels.ships
 			
 				i++;
 			}
+			
+			return collided;
+		}
+		
+		
+		public function checkMissileCollisions(item:*):Boolean {
+			
+			//Check collisions with enemies
+			var collided:Boolean = false;
+			var broken_missiles:Vector.<Shot> = new Vector.<Shot>;
+			
+			for (var i:uint=0; i < manager_.missiles_.length; i++ ) {
+				
+				var missile:Shot = manager_.missiles_[i];
+				
+				if (missile.shape_.hitTestObject(item.mc_)) {
+					collided = true;
+					
+					//Destroy missile
+					if (manager_.missiles_[i] && manager_.missiles_[i].shape_.stage)
+					Misc.getStage().removeChild(manager_.missiles_[i].shape_);
+					delete manager_.missiles_[i];
+					manager_.missiles_.splice(i, 1);
+					
+					item.damage(missile.damage_)
+				}
+			
+				i++;
+			}
+			
 			
 			return collided;
 		}
@@ -224,7 +323,9 @@ package vessels.ships
 				if (hp_ <= 0) {
 					explode();
 					hp_ = init_hp_;
-					GameManager.getInstance().lives_--;
+					shield_ = init_shield_;
+					updateShieldGlow();
+					manager_.lives_--;
 					mc_.x = 100;
 					mc_.y = Misc.getStage().stageHeight / 2;
 				}
@@ -235,7 +336,7 @@ package vessels.ships
 		override public function destroyExplosion():void {
 			explosion_mc_.stop();
 			Misc.getStage().removeChild(explosion_mc_);
-			if (GameManager.getInstance().lives_ > 0) {
+			if (manager_.lives_ > 0) {
 				Misc.getStage().addChild(mc_);
 			} else {
 				removeEventListeners();
@@ -251,6 +352,41 @@ package vessels.ships
 			updateShieldGlow();
 			this.removeLifeBar();
 			this.drawLifeBar();
+		}
+		
+		
+		public function LaunchMissile(target:Vessel):void {
+			trace("LAUNCHING MISSILE");
+			var shot_shape:Shape = Shapes.getCircle(0, 0, 10, 0xFF5555, 0.6);
+			TweenMax.to(shot_shape, 0, { blurFilter: { blurY:10 }} );
+			
+			shot_shape.x = this.mc_.x - this.mc_.width/3;
+			shot_shape.y = this.mc_.y;
+						
+			var s:Shot = new Shot(shot_shape, GameManager.getInstance().missiles_damage_, 1, 1, 0);
+			GameManager.getInstance().missiles_.push(s);
+			Misc.getStage().addChild(s.shape_);
+			
+			//Assign a target
+			s.target_ = target;
+		}
+		
+		
+		public function FireLazer(target:Vessel):void {
+			trace ("FIRE DA LAZER!");
+			
+			var lz_shape:Shape = new Shape();
+			lz_shape.graphics.lineStyle(1, 0xFF0000, 0.85);
+			lz_shape.graphics.moveTo(this.mc_.x, this.mc_.y);
+			lz_shape.graphics.lineTo(target.mc_.x, target.mc_.y);
+			
+			var lz:Shot = new Shot(lz_shape, manager_.lazers_damage_, 0, 0, 0);
+
+			GameManager.getInstance().lazers_.push(lz);
+			Misc.getStage().addChild(lz.shape_);
+			
+			//Insta-damage target
+			target.damage(manager_.lazers_damage_);
 		}
 
 	}

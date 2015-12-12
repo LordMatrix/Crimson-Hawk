@@ -60,9 +60,11 @@ package
 		
 		public var num_missiles_:uint = 0;
 		public var missiles_damage_:uint = 5;
+		public var missiles_:Vector.<Shot>;
 		
 		public var num_lazers_:uint = 0;
 		public var lazers_damage_:uint = 5;
+		public var lazers_:Vector.<Shot>;
 		
 		
 		public static function getInstance():GameManager {
@@ -173,8 +175,11 @@ package
 			enemy_shots_ = new Vector.<Shot>();
 			fired_shots_ = new Vector.<Shot>();
 			spare_shots_ = new Vector.<Shot>();
+			missiles_ = new Vector.<Shot>();
+			lazers_ = new Vector.<Shot>;
 			timers = new Vector.<Timer>();
 				
+			
 			createShots();
 			
 			ship_ = new vessels.ships.Cargo();
@@ -290,6 +295,7 @@ package
 				if (!active_enemies_[i].exploding_) {
 					//Check enemy-shots collisions
 					ship_.checkShotCollisions(active_enemies_[i]);
+					ship_.checkMissileCollisions(active_enemies_[i]);
 					//Check enemy-ship collisions
 					if (!ship_.exploding_ && active_enemies_[i].mc_.hitTestObject(ship_.mc_)) {
 						trace("SHIP HIT BY ENEMY");

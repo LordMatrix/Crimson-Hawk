@@ -48,6 +48,8 @@ package screens
 		
 		private function addEventListeners():void {
 			addEventListener(Event.ENTER_FRAME, loop);
+			manager_.ship_.removeEventListeners();
+			manager_.ship_.addEventListeners();
 		}
 		
 		
@@ -85,6 +87,7 @@ package screens
 		private function killScreen():void {
 			backgr_.kill();
 			removeEventListeners();
+			manager_.ship_.removeEventListeners();
 			removeObjects();
 		}
 		

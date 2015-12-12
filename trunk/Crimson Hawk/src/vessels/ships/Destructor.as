@@ -1,13 +1,15 @@
 package vessels.ships 
 {
+	import com.greensock.TweenMax;
 	import flash.display.MovieClip;
+	import flash.display.Shape;
+	import vessels.Vessel;
 	/**
 	 * ...
 	 * @author Marcos Vazquez
 	 */
 	public class Destructor extends Ship {
 		
-		private var missile_counter_:uint = 0;
 		
 		public function Destructor() {
 			
@@ -48,24 +50,21 @@ package vessels.ships
 				SoundManager.getInstance().playSFX(0);
 			}
 			
-			missile_counter_++;
 			
-			trace("L : " + GameManager.getInstance().spare_shots_.length);
-			if (GameManager.getInstance().spare_shots_.length == 0)
-				LaunchMissile();
-			
-			if (GameManager.getInstance().spare_shots_.length == 0)
-				FireLazer();
+			if (GameManager.getInstance().spare_shots_.length == GameManager.getInstance().MAX_SHOTS - 4 && GameManager.getInstance().missiles_.length == 0) {
+				//Get a missile target
+				var num_targets:int = GameManager.getInstance().active_enemies_.length;
+				
+				if (num_targets > 0) {
+					for (var i:uint = 0; i < GameManager.getInstance().num_missiles_; i++) {
+						var target:Vessel = GameManager.getInstance().active_enemies_[i % num_targets];
+						LaunchMissile(target);
+					}
+				}
+				
+			}
 		}
 		
-		
-		public function LaunchMissile():void {
-			trace("LAUNCHING MISSILE");
-		}
-		
-		public function FireLazer():void {
-			trace ("FIRE DA LAZER!");
-		}
 	}
 
 }
