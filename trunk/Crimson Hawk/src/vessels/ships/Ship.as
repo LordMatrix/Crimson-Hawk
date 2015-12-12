@@ -22,7 +22,8 @@ package vessels.ships
 		private var advancing:Boolean = false;
 		private var retreating:Boolean = false;
 		
-		private var invulnerable:Boolean = false;
+		private var invulnerable_threshold_:uint = 70; 
+		private var invulnerable_:uint = invulnerable_threshold_;
 		
 		private var manager_:GameManager;
 		
@@ -111,6 +112,20 @@ package vessels.ships
 			moveMissiles();
 			DissipateLazers();
 			TweenLite.to(mc_, 0, { removeTint:true } );
+			
+			//change alpha intermitently if the ship is in invulnerable state
+			if (invulnerable_ < invulnerable_threshold_) {
+				if (invulnerable_ % 2 == 0) mc_.alpha = 0;
+				else mc_.alpha = 1;
+					
+				invulnerable_++;
+			}
+			
+			//Restore shield over time
+			if (shield_ < init_shield_) {
+				shield_ += shield_recharge_ / 2000;
+				updateShieldGlow();
+			}
 		}
 		
 		private function onKeyDown(e:KeyboardEvent):void {
@@ -218,7 +233,7 @@ package vessels.ships
 				
 				
 				//Move them
-				if (s.shape_.x < Misc.getStage().stageWidth && s.shape_.y < Misc.getStage().stageHeight) {
+				if (s.shape_.x < Misc.getStage().stageWidth && s.shape_.y < Misc.getStage().stageHeight && s.shape_.x > 0 && s.shape_.y > 0) {
 					s.shape_.x += s.speedX_;
 					s.shape_.y += s.speedY_;
 				} else  {
@@ -306,28 +321,30 @@ package vessels.ships
 		
 		override public function damage(amount:uint):void {
 			
-			if (shield_ >= amount) {
-				shield_ -= amount;
-				updateShieldGlow();
-				trace ("Ship SHIELD is: " + shield_);
-			} else {	
-				shield_ = 0;
-				updateShieldGlow();
-				hp_ -= (amount - shield_);
-				trace ("Ship HP is: " + hp_);
-				this.removeLifeBar();
-				this.drawLifeBar();
-				//turn ship red
-				TweenLite.to(mc_, 0, { tint:0xff0000 } );
-			
-				if (hp_ <= 0) {
-					explode();
-					hp_ = init_hp_;
-					shield_ = init_shield_;
+			if (invulnerable_ >= invulnerable_threshold_) {
+				if (shield_ >= amount) {
+					shield_ -= amount;
 					updateShieldGlow();
-					manager_.lives_--;
-					mc_.x = 100;
-					mc_.y = Misc.getStage().stageHeight / 2;
+					trace ("Ship SHIELD is: " + shield_);
+				} else {	
+					shield_ = 0;
+					updateShieldGlow();
+					hp_ -= (amount - shield_);
+					trace ("Ship HP is: " + hp_);
+					this.removeLifeBar();
+					this.drawLifeBar();
+					//turn ship red
+					TweenLite.to(mc_, 0, { tint:0xff0000 } );
+				
+					if (hp_ <= 0) {
+						explode();
+						hp_ = init_hp_;
+						shield_ = init_shield_;
+						updateShieldGlow();
+						manager_.lives_--;
+						mc_.x = 100;
+						mc_.y = Misc.getStage().stageHeight / 2;
+					}
 				}
 			}
 		}
@@ -338,6 +355,7 @@ package vessels.ships
 			Misc.getStage().removeChild(explosion_mc_);
 			if (manager_.lives_ > 0) {
 				Misc.getStage().addChild(mc_);
+				invulnerable_ = 0;
 			} else {
 				removeEventListeners();
 				Misc.getStage().removeChild(life_bar_);

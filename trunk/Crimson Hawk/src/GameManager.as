@@ -140,21 +140,25 @@ package
 				var x:uint = Misc.getStage().stageWidth + (100 * (i + 1));
 				var y:uint = Misc.random(10, Misc.getStage().stageHeight - 10);
 				var foe:Enemy;
+				
+				//calculate difficulty increase based on current level (stage number)
+				var diff:Number = current_level_ * 0.5;
+				
 				switch(type) {
 					case 1:
-						foe = new Saucer1(x, y, 3.0, 0.005);
+						foe = new Saucer1(x, y, 3.0*diff, 0.005*diff);
 						break;
 					case 2:
-						foe = new Saucer2(x, y, 1.0, 0.005);
+						foe = new Saucer2(x, y, 1.0*diff, 0.005*diff);
 						break;
 					case 3:
-						foe = new Saucer3(x, 20, 4.0, 0.005);
+						foe = new Saucer3(x, 20, 4.0*diff, 0.005*diff);
 						break;
 					case 10:
-						foe = new HeadBoss(Misc.getStage().stageWidth + 50, Misc.getStage().stageHeight / 2, 50.0, 0.1);
+						foe = new HeadBoss(Misc.getStage().stageWidth + 50, Misc.getStage().stageHeight / 2, 50.0*diff, 0.05*diff);
 						break;
 					default:
-						foe = new Saucer1(x, y, 3.0, 0.005);
+						foe = new Saucer1(x, y, 3.0*diff, 0.005*diff);
 						break;
 				}
 				
