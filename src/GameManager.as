@@ -3,6 +3,9 @@ package
 	import com.greensock.TweenLite;
 	import com.greensock.TweenMax;
 	import flash.display.Sprite;
+	import vessels.enemies.AlienBoss;
+	import vessels.enemies.BattleBoss;
+	import vessels.enemies.DarkBoss;
 	import vessels.enemies.Enemy;
 	import vessels.enemies.HeadBoss;
 	import vessels.enemies.Saucer1;
@@ -135,14 +138,20 @@ package
 		
 		private function createEnemies(type:Number, amount:Number):void {
 			
-			for (var i:uint=0; i < amount; i++) {
+			//calculate difficulty increase based on current level (stage number)
+			var diff:Number = current_level_ * 0.25;
+			//the number of boss enemies does not increase with levels
+			var is_boss:Boolean = (current_level_ % 10 == 0);
+			//all the other enemies do
+			var amount_increase:Number;
+			if (is_boss) amount_increase = 1;
+			else amount_increase = diff;
+			
+			for (var i:uint=0; i < Math.round(amount*amount_increase); i++) {
 				
 				var x:uint = Misc.getStage().stageWidth + (100 * (i + 1));
 				var y:uint = Misc.random(10, Misc.getStage().stageHeight - 10);
 				var foe:Enemy;
-				
-				//calculate difficulty increase based on current level (stage number)
-				var diff:Number = current_level_ * 0.5;
 				
 				switch(type) {
 					case 1:
@@ -156,6 +165,15 @@ package
 						break;
 					case 10:
 						foe = new HeadBoss(Misc.getStage().stageWidth + 50, Misc.getStage().stageHeight / 2, 50.0*diff, 0.05*diff);
+						break;
+					case 20:
+						foe = new DarkBoss(Misc.getStage().stageWidth + 50, Misc.getStage().stageHeight / 2, 50.0*diff, 0.05*diff);
+						break;
+					case 30:
+						foe = new BattleBoss(Misc.getStage().stageWidth + 50, Misc.getStage().stageHeight / 2, 50.0*diff, 0.05*diff);
+						break;
+					case 40:
+						foe = new AlienBoss(Misc.getStage().stageWidth + 50, Misc.getStage().stageHeight / 2, 50.0*diff, 0.05*diff);
 						break;
 					default:
 						foe = new Saucer1(x, y, 3.0*diff, 0.005*diff);

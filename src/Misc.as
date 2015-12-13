@@ -63,6 +63,11 @@ package
 		static public function random(min:uint, max:uint):uint {
 			return (Math.floor(Math.random() * (max - min + 1)) + min);
 		}
+		
+		static public function randomSign():int {
+			if (Math.random() < 0.5) return 1;
+			else return -1;
+		}
 	}
 
 }
