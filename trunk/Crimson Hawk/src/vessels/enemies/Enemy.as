@@ -42,7 +42,6 @@ package vessels.enemies {
 			var s:Shot = new Shot(shot_shape, 1, -15, 0, 1);
 			GameManager.getInstance().enemy_shots_.push(s);
 			Misc.getStage().addChild(s.shape_);
-			//SoundManager.getInstance().playSFX(0);
 		}
 		
 		override public function move():Boolean {

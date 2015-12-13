@@ -1,9 +1,75 @@
 <?xml version="1.0" encoding="utf-8" ?>
-<level id="2">
+<level id="1">
 	<time id="1">
 		<enemies>
-			<type>10</type>
+			<type>1</type>
+			<amount>5</amount>
+		</enemies>
+	</time>
+	<time id="6">
+		<enemies>
+			<type>2</type>
+			<amount>5</amount>
+		</enemies>
+	</time>
+	<time id="10">
+		<enemies>
+			<type>1</type>
+			<amount>3</amount>
+		</enemies>
+		<enemies>
+			<type>2</type>
 			<amount>2</amount>
+		</enemies>
+	</time>
+	<time id="15">
+		<enemies>
+			<type>3</type>
+			<amount>1</amount>
+		</enemies>
+	</time>
+	<time id="16">
+		<enemies>
+			<type>3</type>
+			<amount>1</amount>
+		</enemies>
+	</time>
+	<time id="17">
+		<enemies>
+			<type>3</type>
+			<amount>1</amount>
+		</enemies>
+	</time>
+	<time id="18">
+		<enemies>
+			<type>3</type>
+			<amount>1</amount>
+		</enemies>
+	</time>
+	<time id="22">
+		<enemies>
+			<type>3</type>
+			<amount>1</amount>
+		</enemies>
+		<enemies>
+			<type>1</type>
+			<amount>2</amount>
+		</enemies>
+	</time>
+	<time id="24">
+		<enemies>
+			<type>3</type>
+			<amount>1</amount>
+		</enemies>
+		<enemies>
+			<type>2</type>
+			<amount>2</amount>
+		</enemies>
+	</time>
+	<time id="26">
+		<enemies>
+			<type>40</type>
+			<amount>1</amount>
 		</enemies>
 	</time>
 </level>
