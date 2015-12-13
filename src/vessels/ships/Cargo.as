@@ -4,6 +4,8 @@ package vessels.ships
 	/**
 	 * ...
 	 * @author Marcos Vazquez
+	 * 
+	 * The starting ship
 	 */
 	public class Cargo extends Ship
 	{

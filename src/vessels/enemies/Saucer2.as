@@ -2,7 +2,7 @@ package vessels.enemies {
 	import flash.display.MovieClip;
 	/**
 	 * ...
-	 * @author Lord Matrix
+	 * @author Marcos Vazquez
 	 * A flying saucer that moves following a sinoidal path
 	 */
 	public class Saucer2 extends Enemy {
@@ -12,7 +12,7 @@ package vessels.enemies {
 		public function Saucer2(x:uint, y:uint, hp:Number, fire_probability:Number) {
 			var foeMC:MovieClip = new saucer2();
 			super(x,y,hp,fire_probability,foeMC);
-			points_ = 1;
+			points_ = 10;
 			frame_ = Misc.random(0, 359);
 		}
 		

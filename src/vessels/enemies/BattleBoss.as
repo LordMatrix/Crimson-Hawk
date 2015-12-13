@@ -5,7 +5,9 @@ package vessels.enemies
 	import flash.display.Shape;
 	/**
 	 * ...
-	 * @author Lord Matrix
+	 * @author Marcos Vazquez
+	 * 
+	 * A class representing a battleship boss
 	 */
 	public class BattleBoss extends Enemy {
 		
@@ -16,10 +18,15 @@ package vessels.enemies
 		public function BattleBoss(x:uint, y:uint, hp:Number, fire_probability:Number) {
 			var foeMC:MovieClip = new BattleBossMC();
 			super(x,y,hp,fire_probability, foeMC);
-			points_ = 30;
+			points_ = 300;
 			frame_ = Misc.random(0, 359);
 		}
 		
+		
+		/**
+		 * @brief Moves the ship following the player's Y coordinate
+		 * @return	whether it has moved or not
+		 */
 		override public function move():Boolean {
 			if (mc_.x > Misc.getStage().stageWidth - 330) {
 				mc_.x -= 2;
@@ -27,8 +34,14 @@ package vessels.enemies
 				direction_ = -1;
 			} else {
 				//Follows ship around
-				if (GameManager.getInstance().ship_.mc_.y < this.mc_.y) this.mc_.y -= 3;
-				else if (GameManager.getInstance().ship_.mc_.y > this.mc_.y) this.mc_.y += 3;
+				if (GameManager.getInstance().ship_.mc_.y < this.mc_.y) { 
+					this.mc_.y -= 3;
+					this.life_bar_.y -= 3;
+				}
+				else if (GameManager.getInstance().ship_.mc_.y > this.mc_.y) { 
+					this.mc_.y += 3;
+					this.life_bar_.y += 3;
+				}
 			}
 			
 			//caculate the probability an enemy will shoot
@@ -39,6 +52,7 @@ package vessels.enemies
 		}
 		
 		
+		///@brief Shoots fast projectiles aimed at player's position
 		override public function Shoot():void {
 			
 			var manager_:GameManager = GameManager.getInstance();

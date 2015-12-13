@@ -7,6 +7,8 @@ package
 	/**
 	 * ...
 	 * @author Lord Matrix
+	 * 
+	 * This class manages a parallax background
 	 */
 	public class Background extends MovieClip
 	{

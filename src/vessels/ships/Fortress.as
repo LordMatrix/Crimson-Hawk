@@ -7,6 +7,8 @@ package vessels.ships
 	/**
 	 * ...
 	 * @author Marcos Vazquez
+	 * 
+	 * The fourth and final ship
 	 */
 	public class Fortress extends Ship {
 		
@@ -22,6 +24,11 @@ package vessels.ships
 		}
 		
 		
+		/**
+		 * Shoots 8 beams at once.
+		 * Shoots missiles if the upgrade has been bought.
+		 * Shoots insta-lazers if the upgrade has been bought.
+		 */
 		override public function Shoot():void {
 			
 			var manager_:GameManager = GameManager.getInstance();
@@ -69,9 +76,9 @@ package vessels.ships
 				num_targets = manager_.active_enemies_.length;
 				
 				if (num_targets > 0) {
-					for (i = 0; i < manager_.num_missiles_; i++) {
-						target = manager_.active_enemies_[i % num_targets];
-						LaunchMissile(target);
+					for (var i:uint = 0; i < GameManager.getInstance().num_missiles_; i++) {
+						var target_index:uint = i % num_targets;
+						LaunchMissile(target_index);
 					}
 				}
 				

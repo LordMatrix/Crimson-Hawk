@@ -8,6 +8,8 @@ package
 	/**
 	 * ...
 	 * @author Marcos Vazquez
+	 * 
+	 * A class representing a button inside the shop screen
 	 */
 	public class ShopButton extends SimpleButton {
 		

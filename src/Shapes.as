@@ -5,7 +5,9 @@ package
 	import flash.display.Sprite;
 	/**
 	 * ...
-	 * @author Lord Matrix
+	 * @author Marcos Vázquez
+	 * 
+	 * A class that creates coloured shapes
 	 */
 	public class Shapes extends Sprite
 	{

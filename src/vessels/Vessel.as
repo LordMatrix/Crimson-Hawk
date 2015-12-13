@@ -7,6 +7,8 @@ package vessels  {
 	/**
 	 * ...
 	 * @author Marcos Vazquez
+	 * 
+	 * This is the base class for all vessels, both enemies and allies
 	 */
 	public class Vessel 
 	{
@@ -40,6 +42,9 @@ package vessels  {
 		}
 		
 		
+		/**
+		 * @brief	Replaces the ship's graphics by an explosion MovieClip and plays an explosion sound.
+		 */
 		public function explode():void {
 			Misc.getStage().removeChild(mc_);
 						
@@ -56,10 +61,12 @@ package vessels  {
 			SoundManager.getInstance().playSFX(2);
 		}
 		
+		
 		public function destroyExplosion():void {
 			explosion_mc_.stop();
 			Misc.getStage().removeChild(explosion_mc_);
 		}
+		
 		
 		public function updateShieldGlow():void {
 			TweenMax.to(this.mc_, 1, { glowFilter: { color:0x3333ff, alpha:0.8, blurX:45, blurY:45, strength:shield_, quality:1 }} );

@@ -14,6 +14,7 @@ package screens
 	/**
 	 * ...
 	 * @author Marcos Vazquez
+	 * @brief A class that manages the welcome screen
 	 */
 	public class welcome extends MovieClip 
 	{

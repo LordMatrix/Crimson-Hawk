@@ -7,12 +7,23 @@ package vessels.enemies {
 	/**
 	 * ...
 	 * @author Marcos Vazquez
+	 * 
+	 * A class that represents all common attributes and methods for enemy ships
 	 */
 	public class Enemy extends vessels.Vessel {
 		
 		public var fire_probability_:Number;
 		public var points_:Number;
 		
+		
+		/**
+		 * This constructor will be called by every subclass of enemy
+		 * @param	x	x coordinate
+		 * @param	y	y coordinate	
+		 * @param	hp	health points
+		 * @param	fire_probability	the probability that the enemy will shoot, every frame
+		 * @param	foeMC	MovieClip for this enemy
+		 */
 		public function Enemy(x:uint, y:uint, hp:Number, fire_probability:Number, foeMC:MovieClip) {
 			
 			this.mc_ = foeMC;
@@ -32,6 +43,10 @@ package vessels.enemies {
 			Misc.getStage().addChild(life_bar_);
 		}
 		
+		
+		/**
+		 * @brief	Shoots a straight beam to the left side of the screen
+		 */
 		override public function Shoot():void {
 			var shot_shape:Shape = Shapes.getEllipse(0, 0, 25, 8, 0x990000, 0.6);
 			TweenMax.to(shot_shape, 0, { blurFilter: { blurX:10 }} );
@@ -44,6 +59,8 @@ package vessels.enemies {
 			Misc.getStage().addChild(s.shape_);
 		}
 		
+		
+		/// @brief	Moves straight left and pseudo-randomly shoots
 		override public function move():Boolean {
 			if (mc_.x > 0 && !exploding_) {
 				mc_.x -= 10;
@@ -60,6 +77,10 @@ package vessels.enemies {
 		}
 		
 		
+		/**
+		 * Damages this enemy, plays a hit sound, and makes it explode if it's hp<=0
+		 * @param	amount	How many points of damage are inflicted
+		 */
 		override public function damage(amount:uint):void {
 			hp_ -= amount;
 			this.drawLifeBar();
@@ -76,6 +97,9 @@ package vessels.enemies {
 		}
 		
 		
+		/**
+		 * @brief deletes explosion animation and removes the enemy from scene
+		 */
 		override public function destroyExplosion():void {
 			explosion_mc_.stop();
 			Misc.getStage().removeChild(explosion_mc_);

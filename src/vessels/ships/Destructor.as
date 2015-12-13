@@ -7,6 +7,8 @@ package vessels.ships
 	/**
 	 * ...
 	 * @author Marcos Vazquez
+	 * 
+	 * The third ship
 	 */
 	public class Destructor extends Ship {
 		
@@ -23,6 +25,10 @@ package vessels.ships
 		}
 		
 		
+		/**
+		 * Shoots 4 beams at once.
+		 * It also fires missiles it the upgrade has been bought.
+		 */
 		override public function Shoot():void {
 			
 			if (GameManager.getInstance().spare_shots_.length > 3) {
@@ -57,8 +63,8 @@ package vessels.ships
 				
 				if (num_targets > 0) {
 					for (var i:uint = 0; i < GameManager.getInstance().num_missiles_; i++) {
-						var target:Vessel = GameManager.getInstance().active_enemies_[i % num_targets];
-						LaunchMissile(target);
+						var target_index:uint = i % num_targets;
+						LaunchMissile(target_index);
 					}
 				}
 				

@@ -6,12 +6,16 @@ package screens
 	/**
 	 * ...
 	 * @author Marcos Vazquez
+	 * @brief  This class manages the game over screen
 	 */
 	public class gameover extends MovieClip 
 	{
 		private var title:TextField;
 		private var backgr:Background;
 		
+		/**
+		 * @brief Creates screen and calls for listeners and objects
+		 */
 		public function gameover() {
 			super();
 			trace("gameover");
@@ -19,6 +23,7 @@ package screens
 			addEventListeners();
 			addObjects();
 		}
+		
 		
 		private function initScreen():void {
 			

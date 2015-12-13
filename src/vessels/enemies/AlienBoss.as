@@ -5,7 +5,9 @@ package vessels.enemies
 	import flash.display.Shape;
 	/**
 	 * ...
-	 * @author Lord Matrix
+	 * @author Marcos Vazquez
+	 * 
+	 * A class representing a big flying saucer boss with an alien inside.
 	 */
 	public class AlienBoss extends Enemy {
 		
@@ -17,22 +19,25 @@ package vessels.enemies
 		
 		private var fireBall_:Shape;
 		
-		/*
-			Vibrates briefly before teleport
-			Teleports in range x,y on the right side of the screen
-			teleports above ship and fires down, then comes back to position
-		 */
 			
 		public function AlienBoss(x:uint, y:uint, hp:Number, fire_probability:Number) {
 			var foeMC:MovieClip = new AlienBossMC();
 			super(x,y,hp,fire_probability, foeMC);
-			points_ = 30;
+			points_ = 300;
 			frame_ = Misc.random(0, 359);
 			
 			vibrating_ = false;
 			preparing_ = false;
 		}
 		
+		/**
+		 * Moves this boss according to the following pattern:
+		 * 1- Vibrates briefly before teleport
+		 * 2- Teleports in range x,y on the right side of the screen
+		 * 3- Teleports above ship and fires down, then comes back to position
+		 * 
+		 * @return A boolean value indicating if it has moved
+		 */
 		override public function move():Boolean {
 			if (mc_.x > Misc.getStage().stageWidth - 330) {
 				mc_.x -= 2;
@@ -69,11 +74,13 @@ package vessels.enemies
 					//Shoot();
 					frame_ = 0;
 					vibrating_ = true;
-				} else if (Math.random() > 0.95) {
+				} else if (Math.random() > 0.90) {
 					var posx:uint = Misc.random(Misc.getStage().stageWidth - 300, Misc.getStage().stageWidth - 50);
 					var posy:uint = Misc.random(30, Misc.getStage().stageHeight - 100);
 					this.mc_.x = posx;
 					this.mc_.y = posy;
+					this.life_bar_.x = posx;
+					this.life_bar_.y = posy;
 				}
 			}
 			
@@ -83,6 +90,7 @@ package vessels.enemies
 		}
 		
 		
+		/// @brief Shoots down using fireBall_ 
 		override public function Shoot():void {
 			Misc.getStage().removeChild(fireBall_);
 			
@@ -94,6 +102,7 @@ package vessels.enemies
 		}
 		
 		
+		/// @brief Makes the Sprite jitter horizontally
 		public function vibrate():void {
 			if (frame_ % 2 == 0) this.mc_.x -= 7;
 			else this.mc_.x += 7;
@@ -102,6 +111,7 @@ package vessels.enemies
 		}
 		
 		
+		/// @brief Makes fireBall_ bigger
 		private function growShot():void {
 			
 			Misc.getStage().removeChild(fireBall_);

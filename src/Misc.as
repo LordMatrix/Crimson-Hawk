@@ -7,8 +7,9 @@ package
 	/**
 	 * ...
 	 * @author Marcos Vazquez
+	 * 
+	 * A static class that holds general-purpose methods
 	 */
-	//Static class
 	
 	public class Misc {
 		
@@ -41,6 +42,7 @@ package
 			return _stageWidth;
 		}
 		
+
 		static public function getTextField(msg:String, x:uint, y:uint, size:uint, color:uint):TextField {
 			
 			var text:TextField = new TextField();
@@ -59,11 +61,15 @@ package
 			
 			return text;
 		}
+
 		
+		/// @brief	Returns a random number between min and max
 		static public function random(min:uint, max:uint):uint {
 			return (Math.floor(Math.random() * (max - min + 1)) + min);
 		}
 		
+		
+		/// @brief Randomly returns 1 or -1
 		static public function randomSign():int {
 			if (Math.random() < 0.5) return 1;
 			else return -1;
