@@ -23,6 +23,9 @@ package
 	/**
 	 * ...
 	 * @author Marcos Vázquez
+	 * 
+	 * A singleton class that holds data and methods needed throughout the program
+	 * or by various classes.
 	 */
 	public class GameManager extends MovieClip {
 		
@@ -70,6 +73,7 @@ package
 		public var lazers_:Vector.<Shot>;
 		
 		
+
 		public static function getInstance():GameManager {
 			if (!instance_) {
 				instance_ = new GameManager();
@@ -86,12 +90,23 @@ package
 		}
 		
 		
-		
+		/**
+		 * Loads an xml file called levelX.xml and calls
+		 * processXML for parsing it.
+		 * @param	level	The level number to read from.
+		 */
 		private function parseLevel(level:uint):void {
 			myLoader.load(new URLRequest("../Docs/lvl"+((level-1)%4 + 1)+".xml"));
 			myLoader.addEventListener(Event.COMPLETE, processXML);
 		}
 		
+		
+		/**
+		 * @brief	Processes an xml file
+		 * Creates timed events for every wave specified in the file.
+		 * 
+		 * @param	e	a Complete event
+		 */
 		private function processXML(e:Event):void {
 			level = new XML(e.target.data);
 			
@@ -123,6 +138,14 @@ package
 			}
 		}
 		
+		
+		/**
+		 * @brief	Processes a wave of enemies
+		 * 
+		 * @param	wave	an XML document specifying <type> and <amount>
+		 * @param	i		the index of the timers vector this wave is set to spawn
+		 * @return	void
+		 */
 		private function processWave(wave:XML, i:uint):Function {
 			return function(e:TimerEvent):void {
 				//trace(wave);
@@ -136,12 +159,18 @@ package
 		}
 		
 		
+		/**
+		 * @brief	Creates a wave of enemies
+		 * 
+		 * @param	type	The type of enemies
+		 * @param	amount	The amount of enemies to spawn
+		 */
 		private function createEnemies(type:Number, amount:Number):void {
 			
 			//calculate difficulty increase based on current level (stage number)
 			var diff:Number = current_level_ * 0.25;
 			//the number of boss enemies does not increase with levels
-			var is_boss:Boolean = (current_level_ % 10 == 0);
+			var is_boss:Boolean = (type % 10 == 0);
 			//all the other enemies do
 			var amount_increase:Number;
 			if (is_boss) amount_increase = 1;
@@ -186,6 +215,9 @@ package
 		}
 		
 		
+		/**
+		 * @brief Initializes a GameManager's vectors, creates a ship and parses the current level's xml
+		 */
 		public function init():void {
 			
 			points_ = 10000;
@@ -211,12 +243,15 @@ package
 			parseLevel(current_level_);
 		}
 		
+		
+		/// @brief	Prepares variables for a new level restart
 		public function resetLevel():void {
 			waves_finished = false;
 			timers = new Vector.<Timer>();
 			parseLevel(current_level_);
 			createShots();
 		}
+		
 		
 		public function removeObjects():void {
 			var i:int;
@@ -242,6 +277,9 @@ package
 		}
 		
 		
+		/**
+		 * @brief	Creates player shots and adds it to the pool
+		 */
 		public function createShots():void {
 			
 			mergeShots();
@@ -258,8 +296,10 @@ package
 		}
 		
 		
+		/**
+		 * @brief	Dumps fired_shots into spare_shots
+		 */
 		public function mergeShots():void {
-			//dump fired_shots into spare_shots
 			for (var i:uint = 0; i < fired_shots_.length; i++) {
 				Misc.getStage().removeChild(fired_shots_[0].shape_);
 				spare_shots_.push(fired_shots_.shift());
@@ -267,6 +307,9 @@ package
 		}
 		
 		
+		/**
+		 * @brief	Moves the player's shots and checks for collisions
+		 */
 		public function moveShots():void {
 			
 			var i:uint = 0;
@@ -293,6 +336,9 @@ package
 		}
 		
 		
+		/**
+		 * @brief Moves all the enemies in active_enemies_. Removes them from stage if they go off-screen.
+		 */
 		public function moveEnemies():void {
 			
 			var i:uint = 0;
@@ -310,7 +356,9 @@ package
 		}
 		
 		
-		//Checks enemy collisions with allied shots && ship
+		/**
+		 * @brief	Checks enemy collisions with allied shots && ship
+		 */
 		public function checkCollisions():void {
 			
 			for (var i:uint = 0; i < active_enemies_.length; i++ ) {

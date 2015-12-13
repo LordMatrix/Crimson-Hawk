@@ -14,6 +14,8 @@ package vessels.ships
 	/**
 	 * ...
 	 * @author Marcos Vazquez
+	 * 
+	 * This is the base class for all the ships the player can control
 	 */
 	public class Ship extends Vessel {
 		
@@ -204,6 +206,9 @@ package vessels.ships
 		}
 		
 		
+		/**
+		 * @brief Moves the missiles towards their assigned targets. Deletes them if they move off-screen.
+		 */
 		private function moveMissiles():void {
 			
 			var i:uint = 0;
@@ -215,7 +220,7 @@ package vessels.ships
 				
 				
 				//Get the coordinates of the missile target
-				if (manager_.active_enemies_.length > 0) {
+				if (manager_.active_enemies_.length > 0 && s.target_ && s.target_.mc_.stage) {
 					var fx:int = s.target_.mc_.x;
 					var fy:int = s.target_.mc_.y;
 					
@@ -247,6 +252,7 @@ package vessels.ships
 		}
 		
 		
+		/// @brief gradually applies a blur effect to the lazer beams until they fade out.
 		private function DissipateLazers():void {
 			
 			for (var i:uint = 0; i < manager_.lazers_.length; i++) {
@@ -262,6 +268,11 @@ package vessels.ships
 		}
 		
 		
+		/**
+		 * Checks if any of the ship's laser beams has collided with the given object.
+		 * @param	item	The collidable object to check against.
+		 * @return	Boolean	whether it has collided or not
+		 */
 		public function checkShotCollisions(item:*):Boolean {
 			
 			//Check collisions with enemies
@@ -289,6 +300,11 @@ package vessels.ships
 		}
 		
 		
+		/**
+		 * Checks if any of the ship's missiles has collided with the given object.
+		 * @param	item	The collidable object to check against.
+		 * @return	Boolean	whether it has collided or not
+		 */
 		public function checkMissileCollisions(item:*):Boolean {
 			
 			//Check collisions with enemies
@@ -319,6 +335,14 @@ package vessels.ships
 		}
 		
 		
+		/**
+		 * @brief 	Damages the ship
+		 * Reduces the shield, if any.
+		 * Substracts from the ship's hp_ otherwise.
+		 * Makes the ship explode if hp<=0
+		 * 
+		 * @param	amount How many points of damage are inflicted
+		 */
 		override public function damage(amount:uint):void {
 			
 			if (invulnerable_ >= invulnerable_threshold_) {
@@ -350,6 +374,9 @@ package vessels.ships
 		}
 		
 		
+		/**
+		 * @brief	Removes the explosion movieclip from scene
+		 */
 		override public function destroyExplosion():void {
 			explosion_mc_.stop();
 			Misc.getStage().removeChild(explosion_mc_);
@@ -364,6 +391,9 @@ package vessels.ships
 		}
 		
 		
+		/**
+		 * @brief	Restores the ship's stats
+		 */
 		public function restore():void {
 			hp_ = init_hp_;
 			shield_ = init_shield_;
@@ -373,7 +403,11 @@ package vessels.ships
 		}
 		
 		
-		public function LaunchMissile(target:Vessel):void {
+		/**
+		 * @brief	Launches a missile
+		 * @param	target_index	The index of the enemy to be locked on, in GameManager.active_enemies_
+		 */
+		public function LaunchMissile(target_index:uint):void {
 			trace("LAUNCHING MISSILE");
 			var shot_shape:Shape = Shapes.getCircle(0, 0, 10, 0xFF5555, 0.6);
 			TweenMax.to(shot_shape, 0, { blurFilter: { blurY:10 }} );
@@ -386,10 +420,14 @@ package vessels.ships
 			Misc.getStage().addChild(s.shape_);
 			
 			//Assign a target
-			s.target_ = target;
+			s.target_ = GameManager.getInstance().active_enemies_[target_index];;
 		}
 		
 		
+		/**
+		 * @brief	Fires a lazer beam that damages a target instantly
+		 * @param	target	The vessel to attack
+		 */
 		public function FireLazer(target:Vessel):void {
 			trace ("FIRE DA LAZER!");
 			

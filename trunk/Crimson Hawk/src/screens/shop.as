@@ -16,26 +16,33 @@ package screens
 	/**
 	 * ...
 	 * @author Lord Matrix
+	 * @brief  This class manages the shop screen
 	 */
 	public class shop extends MovieClip {
 		
 		private var backgr_:MovieClip;
 		private var points_txt_:TextField;
 		private var lives_txt_:TextField;
+		//Holds all the shop buttons currently available
 		private var buttons_:Vector.<ShopButton>;
+		//The button to continue to the next screen
 		private var next_:Sprite;
 		private var manager_:GameManager = GameManager.getInstance();
 		
+		//Vector containing the current level of every available upgrade
 		public static var levels_:Vector.<int> = new <int>[1, 1, 1, 1, 1, 0];
 		
+		//This is needed in order to initialize the shot_damage field
 		private var shot:Shot = (manager_.spare_shots_.length > 0) ? manager_.spare_shots_[0] : manager_.fired_shots_[0];
 		
+		//Attributes for base upgrades
 		private var images:Vector.<Sprite> = new <Sprite>[new ship2(), new ammo(), new armor(), new speed(), new damage(), new oneup()];
 		private var names:Vector.<String> = new <String> ["Fighter", "Ammo", "Armor", "Speed", "Damage", "1UP"];
 		private var values:Vector.<Number> = new <Number> [1, manager_.MAX_SHOTS, manager_.ship_.init_hp_, manager_.ship_.speed_, shot.damage_, manager_.lives_];
 		private var costs:Vector.<int> = new <int>[200, 30, 30, 50, 70, 300];
 		private var cost_increments:Vector.<Number> = new <Number>[3, 1.5, 1.5, 1.5, 1.5, 1];
 		
+		//Attributes for the second tier upgrades (after buying the "Fighter" ship)
 		private var images2:Vector.<Sprite> = new <Sprite>[new shield(), new shield_recharge()];
 		private var names2:Vector.<String> = new <String> ["Shield", "Recharge"];
 		private var values2:Vector.<Number> = new <Number> [manager_.ship_.init_shield_, manager_.ship_.shield_recharge_];
@@ -43,6 +50,7 @@ package screens
 		private var cost_increments2:Vector.<Number> = new <Number>[1.5, 1.3];
 		private var levels2:Vector.<int> = new <int>[0, 0];
 		
+		//Attributes for the third tier upgrades (after buying the "Destructor" ship)
 		private var images3:Vector.<Sprite> = new <Sprite>[new missiles(), new missile_damage()];
 		private var names3:Vector.<String> = new <String> ["Ammo", "Damage"];
 		private var values3:Vector.<Number> = new <Number> [manager_.num_missiles_, manager_.missiles_damage_];
@@ -50,6 +58,7 @@ package screens
 		private var cost_increments3:Vector.<Number> = new <Number>[1.5, 1.6];
 		private var levels3:Vector.<int> = new <int>[1, 7];
 		
+		//Attributes for the fourth tier upgrades (after buying the "Fortress" ship)
 		private var images4:Vector.<Sprite> = new <Sprite>[new lazers(), new lazer_damage()];
 		private var names4:Vector.<String> = new <String> ["Ammo", "Damage"];
 		private var values4:Vector.<Number> = new <Number> [manager_.num_lazers_, manager_.lazers_damage_];
@@ -58,6 +67,9 @@ package screens
 		private var levels4:Vector.<int> = new <int>[1, 5];
 		
 		
+		/**
+		 * @brief	Creates a new shop screen
+		 */
 		public function shop() {
 			super();
 			trace("shop");
@@ -68,6 +80,10 @@ package screens
 			addEventListeners();
 		}
 		
+		
+		/**
+		 * @brief	Initializes shop's visual elements
+		 */
 		private function initScreen():void {
 		
 			backgr_ = new bgshop();
@@ -80,6 +96,14 @@ package screens
 		
 		
 		
+		/**
+		 * @brief 	Creates a new ShopButton and adds it to the stage
+		 * 
+		 * @param	bx	X coordinate
+		 * @param	by	Y coordinate
+		 * @param	i	The index to fetch information from in the attribute vectors
+		 * @param	index	The index to be stored in the buttons_ vector
+		 */
 		private function addShopButton(bx:uint, by:uint, i:uint, index:uint):void {
 			
 			var cost:int
@@ -92,6 +116,14 @@ package screens
 				}
 		}
 		
+		
+		
+		/**
+		 * @brief 	Unlocks upgrade buttons
+		 * 
+		 * @param	level	The level upgrades to be unlocked
+		 * @param	exact	If false, the "level" parameters is the minimum level to unlock, otherwise it'll only unlock the exact level specified
+		 */
 		private function appendAvailableUpdates(level:uint, exact:Boolean = true):void {
 			
 			if ((!exact && level >= 2) || (exact && level==2)) {
@@ -124,6 +156,9 @@ package screens
 		}
 		
 		
+		/**
+		 * @brief	Creates all available ShopButtons according to levels_[0]
+		 */
 		private function addShopButtons():void {
 			
 			//Create shopping buttons
@@ -165,6 +200,9 @@ package screens
 		}
 		
 		
+		/**
+		 * @brief	Creates shop buttons and exit button
+		 */
 		private function addObjects():void { 
 			addChild(backgr_);
 			addChild(points_txt_);
@@ -181,6 +219,11 @@ package screens
 		}
 		
 		
+		
+		/**
+		 * @brief 	Replaces a locked button by its unlocked counterpart
+		 * @param	index	The index to be used in the parameter vectors
+		 */
 		private function unlockButton(index:uint):void {
 			var oldbtn:ShopButton = buttons_[index];
 			var newbtn:ShopButton = new ShopButton(oldbtn.x, oldbtn.y, images[index], names[index], values[index], costs[index], cost_increments[index], levels_[index]);
@@ -190,6 +233,11 @@ package screens
 		}
 		
 		
+		/**
+		 * @brief	Executes the appropiate action for the ShopButton clicked
+		 * @param	index	The position in buttons_ where the clicked button lives
+		 * @return	A MouseEvent function that returns void itself
+		 */
 		private function processShopButtonClicked(index:int):Function {
 			return function (e:MouseEvent):void {
 				
@@ -358,6 +406,7 @@ package screens
 					buttons_[index].removeLevelDots();
 					buttons_[index].level_++;
 					buttons_[index].drawLevelDots();
+					//Play cash money sound
 					SoundManager.getInstance().playSFX(3);
 				}
 			}
@@ -390,14 +439,17 @@ package screens
 			Misc.getMain().loadScreen(2);
 		}
 		
+		
 		private function killScreen():void {
 			removeEventListeners();
 			removeObjects();
 		}
 		
+		
 		private function removeEventListeners():void {
 			removeEventListener(Event.ENTER_FRAME, loop);
 		}
+		
 		
 		private function removeObjects():void {
 			
@@ -406,7 +458,8 @@ package screens
 			
 			for (var i:uint = 0; i < 12; i++) {
 				Misc.getStage().removeChild(buttons_[i]);
-				
+			
+				//remove all button components
 				if (buttons_[i].img_ && buttons_[i].img_.stage) {
 					Misc.getStage().removeChild(buttons_[i].img_);
 					Misc.getStage().removeChild(buttons_[i].line1_txt_);
@@ -421,7 +474,6 @@ package screens
 			
 			Misc.getStage().removeChild(next_);
 			next_ = null;
-			
 			
 		}
 	}

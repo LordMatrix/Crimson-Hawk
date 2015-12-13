@@ -14,7 +14,10 @@ package screens
 	import flash.utils.Timer;
 	/**
 	 * ...
-	 * @author Lord Matrix
+	 * @author Marcos Vazquez
+	 * 
+	 * @brief This class manages the main ingame screen
+	 * 
 	 */
 	public class game extends MovieClip {
 		
@@ -31,6 +34,9 @@ package screens
 			addObjects();
 		}
 		
+		/**
+		 * @brief Initializes stage objects, points and lives counters
+		 */
 		private function initScreen():void {
 		
 			backgr_ = new Background();
@@ -39,6 +45,10 @@ package screens
 			lives_txt_ = Misc.getTextField("Lives: "+String(manager_.lives_), 0, 20, 20, 0x990000);
 		}
 		
+		
+		/**
+		 * @brief Adds game objects to stage
+		 */
 		private function addObjects():void { 
 			addChild(backgr_);
 			addChild(points_txt_);
@@ -46,6 +56,9 @@ package screens
 		}
 		
 		
+		/**
+		 * @brief Creates event listeners for the ingame screen
+		 */
 		private function addEventListeners():void {
 			addEventListener(Event.ENTER_FRAME, loop);
 			manager_.ship_.removeEventListeners();
@@ -53,6 +66,10 @@ package screens
 		}
 		
 		
+		/**
+		 * @brief Updates game status
+		 * @param	e TimerEvent
+		 */
 		private function loop(e:Event):void {
 			manager_.moveEnemies();
 			manager_.moveShots();
@@ -72,18 +89,27 @@ package screens
 		}
 
 		
+		/**
+		 * @brief Removes stage elements and loads shop screen
+		 */
 		private function nextScreen():void { 
 			killScreen();
 			Misc.getMain().loadScreen(3);
 		}
 		
 		
+		/**
+		 * @brief Removes stage elements and loads game over screen
+		 */
 		private function gameOver():void {
 			killScreen();
 			Misc.getMain().loadScreen(4);
 		}
 		
 		
+		/**
+		 * @brief Removes stage elements, event listeners and this screen ship's listeners
+		 */
 		private function killScreen():void {
 			backgr_.kill();
 			removeEventListeners();
@@ -91,9 +117,11 @@ package screens
 			removeObjects();
 		}
 		
+		
 		private function removeEventListeners():void {
 			removeEventListener(Event.ENTER_FRAME, loop);
 		}
+		
 		
 		private function removeObjects():void {
 			

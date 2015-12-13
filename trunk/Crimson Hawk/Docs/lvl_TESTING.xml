@@ -1,0 +1,9 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<level id="1">
+	<time id="1">
+		<enemies>
+			<type>1</type>
+			<amount>0</amount>
+		</enemies>
+	</time>
+</level>

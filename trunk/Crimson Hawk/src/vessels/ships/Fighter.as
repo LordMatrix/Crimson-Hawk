@@ -4,6 +4,8 @@ package vessels.ships
 	/**
 	 * ...
 	 * @author Marcos Vazquez
+	 * 
+	 * The second ship
 	 */
 	public class Fighter extends Ship
 	{
@@ -19,7 +21,7 @@ package vessels.ships
 			updateShieldGlow();
 		}
 		
-		
+		///@brief	Shoots two beams at once
 		override public function Shoot():void {
 			
 			if (GameManager.getInstance().spare_shots_.length > 1) {

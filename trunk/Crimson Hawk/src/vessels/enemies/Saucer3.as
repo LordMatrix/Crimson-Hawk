@@ -12,7 +12,7 @@ package vessels.enemies {
 		public function Saucer3(x:uint, y:uint, hp:Number, fire_probability:Number) {
 			var foeMC:MovieClip = new saucer3();
 			super(x,y,hp,fire_probability,foeMC);
-			points_ = 2;
+			points_ = 20;
 		}
 		
 		override public function move():Boolean {

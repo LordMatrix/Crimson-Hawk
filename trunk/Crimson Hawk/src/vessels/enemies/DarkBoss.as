@@ -5,7 +5,9 @@ package vessels.enemies
 	import flash.display.Shape;
 	/**
 	 * ...
-	 * @author Lord Matrix
+	 * @author Marcos Vazquez
+	 * 
+	 * A class representing a pointy, dark boss
 	 */
 	public class DarkBoss extends Enemy {
 		
@@ -16,10 +18,15 @@ package vessels.enemies
 		public function DarkBoss(x:uint, y:uint, hp:Number, fire_probability:Number) {
 			var foeMC:MovieClip = new DarkBossMC();
 			super(x,y,hp,fire_probability, foeMC);
-			points_ = 30;
+			points_ = 300;
 			frame_ = Misc.random(0, 359);
 		}
 		
+		
+		/**
+		 * Moves horizontally accross the screen, going faster the more to the left it is. Then it bounces off.
+		 * @return	whether it has moved or not
+		 */
 		override public function move():Boolean {
 			if (mc_.x > Misc.getStage().stageWidth - 330) {
 				mc_.x -= 2;
@@ -41,6 +48,7 @@ package vessels.enemies
 		}
 		
 		
+		/// Shoots red balls at random X and Y speeds and angles, towards the left side of the screen  
 		override public function Shoot():void {
 			var shot_shape:Shape = Shapes.getCircle(0, 0, 8, 0xCC0000, 1);
 			TweenMax.to(shot_shape, 0, { blurFilter: { blurX:10 }} );

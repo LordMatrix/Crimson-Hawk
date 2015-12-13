@@ -10,6 +10,8 @@ package
 	/**
 	 * ...
 	 * @author Marcos Vazquez
+	 * 
+	 * A singleton class that plays sound and music
 	 */
 	public class SoundManager {
 		

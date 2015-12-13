@@ -6,7 +6,6 @@ package
 	import flash.events.Event;
 	import screens.game;
 	import screens.gameover;
-	import screens.select;
 	import screens.shop;
 	import screens.welcome;
 	import flash.display.MovieClip;
@@ -16,6 +15,8 @@ package
 	/**
 	 * ...
 	 * @author Marcos Vazquez
+	 * 
+	 * The main class where everything begins
 	 */
 	public class Main extends Sprite 
 	{
@@ -26,15 +27,19 @@ package
 		private var shopScreen:shop;
 		private var gameOverScreen:gameover;
 		
-		
-		public function Main():void 
-		{
+		/**
+		 * @brief The program's entry point
+		 */
+		public function Main():void {
 			if (stage) init();
 			else addEventListener(Event.ADDED_TO_STAGE, init);
 		}
 		
-		private function init(e:Event = null):void 
-		{
+		/**
+		 * @brief 	sets this instance as main and loads the welcome screen
+		 * @param	e ADDED_TO_STAGE event
+		 */
+		private function init(e:Event = null):void {
 			removeEventListener(Event.ADDED_TO_STAGE, init);
 			// entry point
 			trace("Main");
@@ -42,6 +47,11 @@ package
 			loadScreen(1);
 		}
 		
+		
+		/**
+		 * @brief 	Loads a new screen and starts playing its music
+		 * @param	num	Screen number to be loaded
+		 */
 		public function loadScreen(num:uint):void {
 			switch(num) {
 				case 1:
