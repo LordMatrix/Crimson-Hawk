@@ -22,6 +22,8 @@ package screens
 		private var msg:TextField;
 		private var backgr:Background;
 		
+		private var credits_:credits;
+		
 		public function welcome() {
 			super();
 			trace("welcome");
@@ -35,6 +37,8 @@ package screens
 			
 			title = Misc.getTextField("The Crimson Hawk", Misc.getStageWidth() / 3.5, Misc.getStageHeight() / 5, 80, 0x990000)
 			msg = Misc.getTextField("Click anywhere to continue", Misc.getStageWidth() / 2.5, Misc.getStageHeight() / 1.5, 30, 0xbbbbbb)
+			
+			credits_ = new credits();
 		}
 		
 			
@@ -58,6 +62,8 @@ package screens
 			title = null;
 			removeChild(msg);
 			msg = null;
+			
+			credits_.destroy();
 		}
 		
 		private function killScreen():void {

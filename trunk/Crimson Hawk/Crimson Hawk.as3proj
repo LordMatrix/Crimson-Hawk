@@ -58,6 +58,7 @@
     <element path="assets\CHassetsBoss.swc" />
     <element path="assets" />
     <element path="assets\CH_Assets.swc" />
+    <element path="assets\logoEsat.swc" />
   </libraryPaths>
   <!-- External Libraries -->
   <externalLibraryPaths>
