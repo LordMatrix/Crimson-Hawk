@@ -193,16 +193,16 @@ package
 						foe = new Saucer3(x, 20, 4.0*diff, 0.005*diff);
 						break;
 					case 10:
-						foe = new HeadBoss(Misc.getStage().stageWidth + 50, Misc.getStage().stageHeight / 2, 50.0*diff, 0.05*diff);
+						foe = new HeadBoss(Misc.getStage().stageWidth + 50, Misc.getStage().stageHeight / 2, 80.0*diff, 0.05*diff);
 						break;
 					case 20:
-						foe = new DarkBoss(Misc.getStage().stageWidth + 50, Misc.getStage().stageHeight / 2, 50.0*diff, 0.05*diff);
+						foe = new DarkBoss(Misc.getStage().stageWidth + 50, Misc.getStage().stageHeight / 2, 100.0*diff, 0.05*diff);
 						break;
 					case 30:
-						foe = new BattleBoss(Misc.getStage().stageWidth + 50, Misc.getStage().stageHeight / 2, 50.0*diff, 0.05*diff);
+						foe = new BattleBoss(Misc.getStage().stageWidth + 50, Misc.getStage().stageHeight / 2, 100.0*diff, 0.05*diff);
 						break;
 					case 40:
-						foe = new AlienBoss(Misc.getStage().stageWidth + 50, Misc.getStage().stageHeight / 2, 50.0*diff, 0.05*diff);
+						foe = new AlienBoss(Misc.getStage().stageWidth + 50, Misc.getStage().stageHeight / 2, 150.0*diff, 0.05*diff);
 						break;
 					default:
 						foe = new Saucer1(x, y, 3.0*diff, 0.005*diff);
@@ -221,7 +221,7 @@ package
 		public function init():void {
 			
 			points_ = 10000;
-			lives_ = 10;
+			lives_ = 3;
 			MAX_SHOTS = 4;
 			waves_finished = false;
 			active_enemies_ = new Vector.<Enemy>();
@@ -232,7 +232,12 @@ package
 			missiles_ = new Vector.<Shot>();
 			lazers_ = new Vector.<Shot>;
 			timers = new Vector.<Timer>();
-				
+			
+			current_level_ = 1;
+			num_missiles_ = 0;
+			missiles_damage_ = 5;
+			num_lazers_ = 0;
+			lazers_damage_= 5;
 			
 			createShots();
 			

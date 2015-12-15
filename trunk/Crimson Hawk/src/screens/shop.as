@@ -56,7 +56,7 @@ package screens
 		private var values3:Vector.<Number> = new <Number> [manager_.num_missiles_, manager_.missiles_damage_];
 		private var costs3:Vector.<int> = new <int>[120, 130];
 		private var cost_increments3:Vector.<Number> = new <Number>[1.5, 1.6];
-		private var levels3:Vector.<int> = new <int>[1, 7];
+		private var levels3:Vector.<int> = new <int>[0, 1];
 		
 		//Attributes for the fourth tier upgrades (after buying the "Fortress" ship)
 		private var images4:Vector.<Sprite> = new <Sprite>[new lazers(), new lazer_damage()];
@@ -64,7 +64,7 @@ package screens
 		private var values4:Vector.<Number> = new <Number> [manager_.num_lazers_, manager_.lazers_damage_];
 		private var costs4:Vector.<int> = new <int>[140, 150];
 		private var cost_increments4:Vector.<Number> = new <Number>[1.5, 1.6];
-		private var levels4:Vector.<int> = new <int>[1, 5];
+		private var levels4:Vector.<int> = new <int>[0, 1];
 		
 		
 		/**
@@ -252,6 +252,9 @@ package screens
 					buttons_[index].drawLock();
 					return;
 				}
+				//Get out if the selected button is locked
+				if (index >= levels_.length)
+					return;
 					
 				switch(index) {
 					case 0:

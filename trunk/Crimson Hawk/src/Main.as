@@ -75,6 +75,8 @@ package
 					SoundManager.getInstance().playMusicOnce(5);
 					gameOverScreen = new gameover();
 					addChild(gameOverScreen);
+					//Restart shop levels
+					shop.levels_ = new <int>[1, 1, 1, 1, 1, 0];
 					break;
 				default:
 					trace ("Screen unknown");

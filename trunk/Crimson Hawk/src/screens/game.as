@@ -25,6 +25,7 @@ package screens
 		private var manager_:GameManager;
 		private var points_txt_:TextField;
 		private var lives_txt_:TextField;
+		private var level_txt_:TextField;
 		
 		public function game() {
 			super();
@@ -42,7 +43,8 @@ package screens
 			backgr_ = new Background();
 			manager_ = GameManager.getInstance();
 			points_txt_ = Misc.getTextField("Points: "+String(manager_.points_), 0, 0, 20, 0x990000);
-			lives_txt_ = Misc.getTextField("Lives: "+String(manager_.lives_), 0, 20, 20, 0x990000);
+			lives_txt_ = Misc.getTextField("Lives: " + String(manager_.lives_), 0, 20, 20, 0x990000);
+			level_txt_ = Misc.getTextField("Level " + String(manager_.current_level_ - 1 ), 600, 0, 30, 0xFFFFFF);
 		}
 		
 		
@@ -53,6 +55,7 @@ package screens
 			addChild(backgr_);
 			addChild(points_txt_);
 			addChild(lives_txt_);
+			addChild(level_txt_);
 		}
 		
 		
@@ -77,6 +80,7 @@ package screens
 			
 			points_txt_.text = "Points: " + String(manager_.points_);
 			lives_txt_.text = "Lives: " + String(manager_.lives_);
+			level_txt_.text = "Level: " + String(manager_.current_level_ - 1);
 			
 			//If there are no lives left, go to game over screen
 			if (manager_.lives_ <= 0) {
