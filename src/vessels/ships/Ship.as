@@ -74,7 +74,8 @@ package vessels.ships
 		
 		
 		public function removeLifeBar():void {
-			Misc.getStage().removeChild(life_bar_);
+			if (life_bar_.stage)
+				Misc.getStage().removeChild(life_bar_);
 		}
 		
 		
@@ -380,14 +381,17 @@ package vessels.ships
 		override public function destroyExplosion():void {
 			explosion_mc_.stop();
 			Misc.getStage().removeChild(explosion_mc_);
+			removeLifeBar()
+			
 			if (manager_.lives_ > 0) {
 				Misc.getStage().addChild(mc_);
 				invulnerable_ = 0;
+				drawLifeBar();
 			} else {
 				removeEventListeners();
-				Misc.getStage().removeChild(life_bar_);
 			}
 			exploding_ = false;
+			
 		}
 		
 		
